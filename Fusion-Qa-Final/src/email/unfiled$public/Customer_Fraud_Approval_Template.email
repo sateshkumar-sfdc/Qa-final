@@ -1,0 +1,5 @@
+Customer Record is awaiting Fraud Approval.
+
+Customer Name : {!Account.Name}
+
+{!Account.Link}

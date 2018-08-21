@@ -1,0 +1,10 @@
+Hi,
+
+There have been following ownership changes to the Opportunity :{!Opportunity.Name}
+
+Old Owner : {!Opportunity.Prior_Owner__c}
+New Owner : {!Opportunity.OwnerFullName}
+
+Link to the Opportunity : {!Opportunity.Link}
+
+Thanks

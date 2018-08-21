@@ -1,0 +1,72 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" controller="FileController" access="global" >
+<aura:attribute name="parentId" type="Id" default = "500K000000GIDQ5IAP"/>
+<aura:attribute name="FileDataWrapperList" type="FileController.FileDataWrapper[]"  />    
+    <!--<aura:handler event="aura:waiting" action="{!c.waiting}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.doneWaiting}"/>-->
+    
+    <div class="site-masthead slds-page-header" role="banner">
+            <div class=" slds-grid slds-wrap">
+                <div class="slds-col slds-has-flexi-truncate">
+                  <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                    </div>
+                    <div class="slds-media__body">
+                      <h1 class="slds-page-header__title pageTitle slds-m-right--small slds-align-middle slds-truncate" title="this should match the Record Title">Upload Products CSV File</h1>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    <div class="slds-grid  slds-grid--vertical-align-center slds-box slds-theme--shade">
+            <div class="slds-col slds-m-around--small">
+                <div class="slds-form-element">       
+                   <div class="slds-form-element__control">
+                       <input type="file" class="file" aura:id="upButton" onchange="{!c.readFile}"/>
+                       <!--<lightning:input type="file" label="Attachment" name="file" multiple="true" aura:id = "upButton" accept=".csv"  />-->
+                       <ui:button label="Save" press="{!c.save}"/>                                      
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div>
+    <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+          <thead>
+            <tr class="slds-text-heading_label">
+                <th scope="col"><div class="slds-truncate" title="Name">Quote</div></th>
+              <th scope="col"><div class="slds-truncate" title="Name">Product Name</div></th>
+              <th scope="col"><div class="slds-truncate" title="ID">Product Code</div></th>
+              <th scope="col"><div class="slds-truncate" title="Name">Description</div></th>
+                <th scope="col"><div class="slds-truncate" title="ID">Product</div></th>
+              <!--th scope="col"><div class="slds-truncate" title="Name">Art Category</div></th>
+                <th scope="col"><div class="slds-truncate" title="ID">Licensing Org</div></th>
+              <th scope="col"><div class="slds-truncate" title="Name">Site Category</div></th>
+                <th scope="col"><div class="slds-truncate" title="ID">Royalty Rate</div></th>
+              <th scope="col"><div class="slds-truncate" title="Name">Item Key Id</div></th-->
+              
+            </tr>
+          </thead>
+        <tbody>
+            <!-- Use the Apex model and controller to fetch server side data -->
+            <aura:iteration items="{!v.FileDataWrapperList}" var="FileData">
+                <tr>
+                    <td scope="row"><div class="slds-truncate" title="Name">{!FileData.quoteHeader}</div></td>
+                    <td scope="row"><div class="slds-truncate" title="Name">{!FileData.productName}</div></td>
+                    <td scope="row"><div class="slds-truncate" title="Name">{!FileData.productCode}</div></td>
+                    <td scope="row"><div class="slds-truncate" title="Name">{!FileData.description}</div></td>
+                    <td><div class="slds-truncate" title="Item Key"><img src="{!FileData.productUrl}" style="height: 100px;">
+                                    </img></div></td>
+					<!--td scope="row"><div class="slds-truncate" title="Premium">{!FileData.premium}</div></td>
+                    <td><div class="slds-truncate" title="Licensed Property">{!FileData.licensedProperty}</div></td>
+					<td scope="row"><div class="slds-truncate" title="Art Category">{!FileData.artCategory}</div></td>
+                    <td><div class="slds-truncate" title="Licensing Org">{!FileData.licensingOrg}</div></td>
+					<td scope="row"><div class="slds-truncate" title="Site Category">{!FileData.siteCategory}</div></td>
+                    <td><div class="slds-truncate" title="Royalty Rate">{!FileData.royaltyRate}</div></td>
+					<td scope="row"><div class="slds-truncate" title="Item Key Id">{!FileData.itemKeyId}</div></td-->
+
+                </tr>
+                </aura:iteration>
+       </tbody>
+     </table>
+       
+   </div>
+</aura:component>

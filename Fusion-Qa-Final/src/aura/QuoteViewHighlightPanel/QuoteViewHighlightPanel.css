@@ -1,0 +1,44 @@
+.THIS .fontvcss{
+    width: 52px;	
+    color: #272727;	
+    font-family: Roboto;	
+    font-size: 14px;	
+    font-weight: 500;	
+    line-height: 19px;	
+    text-align: right;
+}
+
+.THIS .quoteexpirecss{
+    float: right;
+    color: #FE6100;
+    font-family: Roboto;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.THIS .subtotal {	
+   	
+    color: #949394;	
+    font-family: Roboto;	
+    font-size: 14px;	
+    font-weight: 500;	
+    line-height: 19px;
+    
+}
+
+.THIS .total {
+    color: #272727;
+    font-family: Roboto;	
+    font-size: 14px;	
+    font-weight: bold;	
+    line-height: 19px;
+   
+}
+
+.THIS .btncss:focus{
+    background-color: #2D74DA;
+    color: white;
+}
+.THIS .btn{
+    border: 1px solid #D8D8D8;
+}

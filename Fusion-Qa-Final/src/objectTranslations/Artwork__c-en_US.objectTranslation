@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Artwork</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Artworks</value>
+    </caseValues>
+    <fields>
+        <label><!-- Art Approval Email Sent At --></label>
+        <name>Art_Approval_Email_Sent_At__c</name>
+    </fields>
+    <fields>
+        <label><!-- Art BMP URL --></label>
+        <name>Art_BMP_URL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Art JSON --></label>
+        <name>Art_JSON__c</name>
+    </fields>
+    <fields>
+        <label><!-- Art work status external --></label>
+        <name>Art_work_status_external__c</name>
+        <picklistValues>
+            <masterLabel>Test</masterLabel>
+            <translation><!-- Test --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Art work status internal --></label>
+        <name>Art_work_status_internal__c</name>
+        <picklistValues>
+            <masterLabel>Test</masterLabel>
+            <translation><!-- Test --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- FlatImage --></label>
+        <name>FlatImage__c</name>
+    </fields>
+    <fields>
+        <label><!-- Laser Art Approved Error --></label>
+        <name>Laser_Art_Approved_Error__c</name>
+    </fields>
+    <fields>
+        <label><!-- Laser Art Asset URL --></label>
+        <name>Laser_Art_Asset_URL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Laser Art Back --></label>
+        <name>Laser_Art_Back__c</name>
+    </fields>
+    <fields>
+        <label><!-- Laser Art Front --></label>
+        <name>Laser_Art_Front__c</name>
+    </fields>
+    <fields>
+        <label><!-- Opportunity --></label>
+        <name>Opportunity__c</name>
+        <relationshipLabel><!-- Artworks --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Quote Header --></label>
+        <name>Quote_Header__c</name>
+        <relationshipLabel><!-- Artworks --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Quote Item --></label>
+        <name>Quote_Item__c</name>
+        <relationshipLabel><!-- Artworks --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Released to Laser --></label>
+        <name>Released_to_Laser__c</name>
+    </fields>
+    <fields>
+        <label><!-- UPK --></label>
+        <name>UPK__c</name>
+    </fields>
+    <fields>
+        <label><!-- ramsideloc --></label>
+        <name>ramsideloc__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

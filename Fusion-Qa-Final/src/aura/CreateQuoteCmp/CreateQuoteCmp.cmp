@@ -1,0 +1,240 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader"
+                controller="CreateQuote" access="global">
+    
+    <aura:attribute name="flowControl" type="integer" default ="-1"/>
+    <aura:attribute name="accList" type="List"/>
+    <aura:attribute name="filteraccList" type="List"/>
+    
+    <aura:attribute name="conList" type="List"/>
+    <aura:attribute name="filterconList" type="List"/>
+    
+     <aura:attribute name="searchText" type="String"/>
+     <aura:attribute name="searchKey" type="String"/>
+    
+    <aura:attribute name="isSpinner" type="Boolean"/>
+    
+    <aura:attribute name="showList" type="List"/>
+    <aura:attribute name="selectedAccount" type="string" default=""/>
+    <aura:attribute name="selectedContact" type="string" default=""/>
+    <aura:attribute name="page" type="integer" default="0"/>
+    <aura:attribute name="disablePrev" type="boolean" default="true"/>
+    <aura:attribute name="disableNxt" type="boolean"/>
+    <aura:attribute name="QuoteId" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    
+    
+    <ltng:require styles="{!$Resource.popupCSS}" />
+    <aura:if isTrue = "{!v.isSpinner}">
+    <div class="demo-only" style="height: 6rem;">
+     <div role="status" class="slds-spinner slds-spinner_medium">
+       <span class="slds-assistive-text">Loading</span>
+       <div class="slds-spinner__dot-a"></div>
+       <div class="slds-spinner__dot-b"></div>
+     </div>
+    </div>
+    </aura:if>
+    <aura:if isTrue = "{!v.flowControl == 0}">
+        <div class="slds-align_absolute-center slds-text-heading_medium">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <b>New Record Created.</b>
+        </div>
+    </aura:if>
+    <aura:if isTrue = "{!v.flowControl == 1}">
+        <div class="slds-align_absolute-center slds-text-heading_medium">
+            <br/>
+            <br/>
+            <b>Please Select An Account</b>
+        </div>
+        <br/>
+        <lightning:input type="text"  name="searchInput" onkeyup="{!c.filterSelection}"  value="{!v.searchText}" aura:id="searchInput" placeholder="search..." /> 
+        
+        <br/>
+        <br/>
+        <br/>
+        <lightning:button variant="brand" label="Next" onclick="{!c.accountNext }" class="slds-align_absolute-center"/>
+        <br/>
+        <br/>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <tr>
+                <td>
+                    <div class="slds-truncate slds-form-element__control" title="Select">
+                        <span class="slds-radio">
+                            <input type="radio" name="account" id="None" value="" checked = "checked" onchange="{!c.selectAccount}"/>
+                            <label class="slds-radio__label" for="None">
+                                <span class="slds-radio_faux"></span>
+                                <span class="slds-form-element__label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None</span>
+                            </label>
+                            
+                        </span>
+                    </div>
+                </td>
+                
+            </tr>
+        </table>
+        <br/>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Select"><b>Select</b></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Name"><b>Name</b></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Phone"><b>Phone</b></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Email"><b>Owner</b></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.showList}" var="acc" >
+                    <tr>
+                        <td>
+                            <div class="slds-truncate slds-form-element__control" title="Select">
+                                <span class="slds-radio">
+                                    <input type="radio" name="account" id="{!acc.Id}" value="{!acc.Id}" onchange="{!c.selectAccount}"/>
+                                    <label class="slds-radio__label" for="{!acc.Id}">
+                                        <span class="slds-radio_faux"></span>
+                                    </label>
+                                    
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!acc.Name}">{!acc.Name}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!acc.Phone}">{!acc.Phone}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!acc.Owner}">{!acc.Owner.Name}</div>
+                        </td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+        <!--div class="slds-align_absolute-center slds-m-vertical_x-small">
+            <lightning:button variant="base" label="Previous" onclick="{!c.prevRecords}" disabled="{!v.disablePrev}"/>
+            &nbsp;&nbsp;
+            <lightning:button variant="base" label="Next" onclick="{!c.nextRecords}" disabled="{!v.disableNxt}"/>
+        </div-->
+        <br/>
+        <br/>
+        <lightning:button variant="brand" label="Next" onclick="{!c.accountNext }" class="slds-align_absolute-center"/>
+    </aura:if>
+    
+    <aura:if isTrue = "{!v.flowControl == 2}">
+        <div class="slds-align_absolute-center slds-text-heading_medium">
+            <br/>
+            <br/>
+            <b>Please Select Contact</b>
+            <br/>
+            
+            
+        </div>
+        <br/>
+         <lightning:input type="text"  name="searchInput1" onkeyup="{!c.keyPressController}"  value="{!v.searchKey}" aura:id="searchInput1" placeholder="search..." /> 
+        <br/>
+        <br/>
+        <br/>
+        <lightning:button variant="brand" label="Next" onclick="{!c.contactNext }" class="slds-align_absolute-center"/>
+        <!--br/>
+        <br/>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <tr>
+                  <td>
+                    <div class="slds-truncate slds-form-element__control" title="Select">
+                        <span class="slds-radio">
+                         <input type="radio" name="contact" id="None" value="" checked = "checked" onchange="{!c.selectContact}"/>
+                           <label class="slds-radio__label" for="None">
+                            <span class="slds-radio_faux"></span>
+                             <span class="slds-form-element__label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None</span>
+                          </label>
+                        </span>
+                      </div>
+                  </td>
+            </tr>
+        </table-->
+        <br/>
+        <br/>
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <tr>
+                <td>
+                    <div class="slds-truncate slds-form-element__control" title="Select">
+                        <span class="slds-radio">
+                            <input type="radio" name="account" id="None" value="" checked = "checked" onchange="{!c.selectContact}"/>
+                            <label class="slds-radio__label" for="None">
+                                <span class="slds-radio_faux"></span>
+                                <span class="slds-form-element__label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None</span>
+                            </label>
+                            
+                        </span>
+                    </div>
+                </td>
+                
+            </tr>
+        </table>
+        <br/>
+        <table class="slds-table slds-table_bordered slds-table_cell-bufferslds-table_striped">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Select"><b>Select</b></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Name"><b>Name</b></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Phone"><b>Phone</b></div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Email"><b>Email</b></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.showList}" var="con" >
+                    <tr>
+                        <td>
+                            <div class="slds-truncate slds-form-element__control" title="Select">
+                                <span class="slds-radio">
+                                    <input type="radio" name="contact" id="{!con.Id}" value="{!con.Id}" onchange="{!c.selectContact}"/>
+                                    <label class="slds-radio__label" for="{!con.Id}">
+                                        <span class="slds-radio_faux"></span>
+                                    </label>
+                                    
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!con.FirstName}">{!con.FirstName} &nbsp; {!con.LastName}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!con.Phone}">{!con.Phone}</div>
+                        </td>
+                        <td>
+                            <div class="slds-truncate" title="{!con.Fax}">{!con.Fax}</div>
+                        </td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+        <!--div class="slds-align_absolute-center slds-m-vertical_x-small">
+            <lightning:button variant="base" label="Previous" onclick="{!c.prevRecords}" disabled="{!v.disablePrev}"/>
+            &nbsp;&nbsp;
+            <lightning:button variant="base" label="Next" onclick="{!c.nextRecords}" disabled="{!v.disableNxt}"/>
+        </div-->
+        <br/>
+        <lightning:button variant="brand" label="Next" onclick="{!c.contactNext }" class="slds-align_absolute-center"/>
+    </aura:if>
+    <!--aura:if isTrue = "{!v.flowControl == 3}">
+        <c:QuoteScreen qutoeId = "{!v.qutoeId}"/>
+    </aura:if-->
+</aura:component>

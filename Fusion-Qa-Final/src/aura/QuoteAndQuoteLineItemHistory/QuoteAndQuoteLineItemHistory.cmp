@@ -1,0 +1,113 @@
+<!--
+Name: YETI_AccountAttachments
+Description: Gets the history of quote and quotelineitem
+Created By: Yeshas Konduru
+-->
+<aura:component controller="QuoteAndQuoteLineItemHistory" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <!-- HANDLERS -->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <!-- ATTRIBUTES -->
+    <aura:attribute name="componentHistory" type="List" />
+    <aura:attribute name="componentHistoryFinalList" type="List" />
+    <aura:attribute name="searchText" type="String"/>
+    <aura:attribute name="headers" type="List"/>
+    <aura:attribute type="Boolean" name="sortType" />
+    
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="sortedBy" type="String" default="Name"/>
+    <aura:attribute name="sortedDirection" type="String" default="asc"/>
+    <div class="slds">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_9-of-12"></div>
+            <div class="slds-col slds-size_3-of-12">
+                <lightning:input type="text"  name="searchInput" onkeyup="{!c.filterSelection}"  value="{!v.searchText}" aura:id="searchInput" label="Type here to search" />
+                <br/>
+            </div>
+        </div>
+        <!--    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <thead>
+                <tr class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Date">Date
+                            <lightning:buttonIcon aura:id="CreatedDate" iconName="utility:sort" variant="bare" onclick="{! c.sortHistory }" alternativeText="Sort" />                            
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Field" >Field
+                            <lightning:buttonIcon aura:id="Field" iconName="utility:sort" variant="bare" onclick="{! c.sortHistory }" alternativeText="Sort" />
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="User">User
+                            <lightning:buttonIcon aura:id="CreatedByName" iconName="utility:sort" variant="bare" onclick="{! c.sortHistory }" alternativeText="Sort" />
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Orignal Value">Orignal Value
+                            <lightning:buttonIcon aura:id="OldValue" iconName="utility:sort" variant="bare" onclick="{! c.sortHistory }" alternativeText="Sort" />
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="New Value">New Value
+                            <lightning:buttonIcon aura:id="NewValue" iconName="utility:sort" variant="bare" onclick="{! c.sortHistory }" alternativeText="Sort" />
+                        </div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="New Value">Type
+                            <lightning:buttonIcon aura:id="Type" iconName="utility:sort" variant="bare" onclick="{! c.sortHistory }" alternativeText="Sort" />
+                        </div>
+                    </th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.componentHistory}" var="obj">
+                    
+                    <tr>
+                        <th scope="row" data-label="Date">
+                            <div class="slds-truncate" title="Date">
+                                <lightning:formattedDateTime value="{!obj.CreatedDate}" />
+                            </div>
+                        </th>
+                        <td data-label="Field">
+                            <div class="slds-truncate" title="Field">
+                                {!obj.Field}
+                            </div>
+                        </td>
+                        <td data-label="User">
+                            
+                            <div class="slds-truncate" title="4/14/2015">
+                                {!obj.CreatedByName}
+                            </div>
+                        </td>
+                        <td data-label="Orignal Value">
+                            <div class="slds-truncate" title="Orignal Value">
+                                {!obj.OldValue}
+                            </div>
+                        </td>
+                        <td data-label="New Value">
+                            <div class="slds-truncate" title="New Value">
+                                {!obj.NewValue}
+                            </div>
+                        </td>
+                        <td data-label="New Value">
+                            <div class="slds-truncate" title="Type">
+                                {!obj.Type}
+                            </div>
+                        </td>
+                        
+                    </tr>
+                    
+                </aura:iteration> 
+            </tbody>
+        </table>-->
+        
+        <lightning:datatable data="{!v.componentHistory}" 
+                             columns="{!v.headers}" 
+                             keyField="Id"
+                             hideCheckboxColumn="true"
+                             onsort="{!c.updateColumnSorting}"
+                             sortedBy="{!v.sortedBy}"  
+                             sortedDirection="{!v.sortedDirection}"/>
+    </div>
+</aura:component>

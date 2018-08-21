@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>ProductOfIntrest</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>ProductOfIntrests</value>
+    </caseValues>
+    <fields>
+        <label><!-- Color --></label>
+        <name>Color__c</name>
+        <picklistValues>
+            <masterLabel>Blue</masterLabel>
+            <translation><!-- Blue --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Navy</masterLabel>
+            <translation><!-- Navy --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Seafoam</masterLabel>
+            <translation><!-- Seafoam --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>black</masterLabel>
+            <translation><!-- black --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>white</masterLabel>
+            <translation><!-- white --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Lead --></label>
+        <name>Lead__c</name>
+        <relationshipLabel><!-- ProductOfIntrests --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Product Type --></label>
+        <name>Product_Type__c</name>
+        <picklistValues>
+            <masterLabel>Accessories</masterLabel>
+            <translation><!-- Accessories --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Drinkware</masterLabel>
+            <translation><!-- Drinkware --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Gear</masterLabel>
+            <translation><!-- Gear --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hard-Cooler</masterLabel>
+            <translation><!-- Hard-Cooler --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Soft-Cooler</masterLabel>
+            <translation><!-- Soft-Cooler --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Products --></label>
+        <name>Products__c</name>
+        <picklistValues>
+            <masterLabel>Hopper 20</masterLabel>
+            <translation><!-- Hopper 20 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hopper 30</masterLabel>
+            <translation><!-- Hopper 30 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hopper 40</masterLabel>
+            <translation><!-- Hopper 40 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Roadie 20</masterLabel>
+            <translation><!-- Roadie 20 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sherpa</masterLabel>
+            <translation><!-- Sherpa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tank 45</masterLabel>
+            <translation><!-- Tank 45 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tank 85</masterLabel>
+            <translation><!-- Tank 85 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 105</masterLabel>
+            <translation><!-- Tundra 105 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 110</masterLabel>
+            <translation><!-- Tundra 110 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 125</masterLabel>
+            <translation><!-- Tundra 125 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 160</masterLabel>
+            <translation><!-- Tundra 160 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 210</masterLabel>
+            <translation><!-- Tundra 210 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 250</masterLabel>
+            <translation><!-- Tundra 250 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 35</masterLabel>
+            <translation><!-- Tundra 35 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 350</masterLabel>
+            <translation><!-- Tundra 350 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 420</masterLabel>
+            <translation><!-- Tundra 420 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 45</masterLabel>
+            <translation><!-- Tundra 45 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 45 White</masterLabel>
+            <translation><!-- Tundra 45 White --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 50</masterLabel>
+            <translation><!-- Tundra 50 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 65</masterLabel>
+            <translation><!-- Tundra 65 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tundra 75</masterLabel>
+            <translation><!-- Tundra 75 --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Qty --></label>
+        <name>Qty__c</name>
+    </fields>
+    <layouts>
+        <layout>ProductOfIntrest Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

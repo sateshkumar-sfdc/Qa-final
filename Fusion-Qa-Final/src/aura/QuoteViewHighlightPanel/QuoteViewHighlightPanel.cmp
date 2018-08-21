@@ -1,0 +1,295 @@
+<!--*************************************************************************************************************************
+Name: QuoteViewHighlightPanel.cmp      
+Description: Displays the quote header Information in highlights Panel   
+
+Date         Version          Author             Summary of Changes 
+*****************************************************************************************************************************
+07/25/2018    1.0        Ranjith Thadakala       Initial Release
+**************************************************************************************************************************-->
+
+
+
+<aura:component controller="QuoteViewHighlightPanelController" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:attribute name="loaded" type="boolean" />
+     <aura:attribute name="record" type="Object" description="The record object to be displayed"/>
+     <aura:attribute name="simpleRecord" type="Object" description="A simplified view record object to be displayed"/>
+     <aura:attribute name="recordError" type="String" description="An error message bound to force:recordData"/>
+     <force:recordData aura:id="record"
+        layoutType="FULL"
+        recordId="{!v.recordId}"
+        targetError="{!v.recordError}"
+        targetRecord="{!v.record}"
+        targetFields ="{!v.simpleRecord}"
+        mode="VIEW"/>
+    
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    
+<div>
+    <aura:if isTrue="{!v.loaded }">
+        <lightning:spinner alternativeText="Loading" />
+    </aura:if>
+        <div class="slds-page-header " style="background: white; border-radius: 0;">
+            <div class="slds-grid">
+                <div class="slds-col slds-has-flexi-truncate">
+                    <div class="slds-media slds-no-space slds-grow">
+                    
+                        <div class="slds-media__body">
+                            <nav>
+                                <ol class="slds-breadcrumb slds-line-height_reset">
+                                    <li class="slds-breadcrumb__item">
+                                        <span class="slds-text-heading_small">
+                                            <h2 style="color: rgb(112, 110, 107);">Display Quote</h2>
+                                        </span>	
+                                    </li>
+                                </ol>
+                            </nav>
+                            <div class="slds-grid slds-wrap" > 
+                            <div>   
+                            <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="Quote Number">
+                               Q - {!v.simpleRecord.Name}
+                            </h1>
+                            </div> 
+                            <div>    
+                             <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="Customer Name">
+                                Customer Name
+                            </h1>
+                                
+                                </div><br/>
+                                
+                           </div>       
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-no-flex slds-grid slds-align-top">
+
+                    <div class="slds-button-group"  role="group">
+                        <lightning:button label="Sales Order" onclick="{!c.margeCall}"   />
+                        <lightning:button label="Clone Quote" onclick="{!c.cloneQuote}"  />
+                        <lightning:button label="Expire Quote" onclick="{!c.expireQuote}" disabled="{!(v.simpleRecord.Status__c == 'Expired' ? true : false)}" />
+                        <lightning:button label="Edit" onclick="{!c.navigateToEditScreen}" />
+                        <lightning:button label="Send Quote" />
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                                <button class="slds-button" style="background: #c8daf4;">
+                                    <div>
+                                    <h1 style="color:black;">&nbsp;{!v.simpleRecord.Status__c}&nbsp;</h1>
+                                        </div>
+                                </button>
+                                
+            </div><br/>
+            <div class="slds-col slds-align-middle" >
+              <p class="slds-text-body_small">Quote created on {!v.simpleRecord.CreatedDate__c}  • Created by {!v.simpleRecord.CreatedBy.Name} • Last modified  {!v.simpleRecord.LastModifiedDate}</p>
+            </div><br/>
+            <div class=" slds-grid slds-wrap">
+                
+                <div class="slds-size_1-of-2">
+                            <table >
+                                 <tbody  >
+
+                                 <tr>
+                                 <td scope="row"  style="background: white;">
+                                    <div>
+                                       <lightning:input type="date" label="In Hands Date" name="date" value="{!v.simpleRecord.In_Hands_Date__c}" aura:id="inhanddateId" disabled="true" />
+                                     </div>
+                                 </td>
+                                 <td  style="background: white;" >
+                                    <div>
+                                     <lightning:input type="date" label="Do Not Ship Before" name="date" value="{!v.simpleRecord.Do_Not_Ship_Before__c}" aura:id="DoNotShipBeforeId" disabled="true" />
+                                     </div>
+                                 </td>
+                                </tr>
+                                     <br/>
+                                     <tr>
+                                       
+     
+                                 <td   scope="row" style="background: white;">
+                                    <div class=" slds-button-group"  role="group">
+                                        <button class="slds-button slds-button_outline-brand btncss btn "  style=" height: 32px; margin-top: 20px;" >$</button>
+                                        <button class="slds-button slds-button_outline-brand btncss btn" style=" height: 32px; margin-top: 20px;" >%</button>
+                                        <div class=" slds-align_absolute-center" >
+                                        <lightning:input placeholder="value" name="text" aura:id="DiscountId" />
+                                        </div>
+                                        
+                                  </div>
+                                 </td>
+                                   <td  style="background: white;" >
+                                    <div  >
+                                       <ui:inputTextArea aura:id="DiscountreasonId" label="Discount Reason"  rows="1"/>
+                                        
+                                       </div>
+                                 </td>
+                                </tr>
+                                     
+                        
+                         </tbody>
+                    </table>
+                    
+                    
+                    
+                    <!--ul class="slds-grid slds-page-header__detail-row">
+                        
+                        &nbsp; &nbsp; &nbsp;
+                        <li class="slds-page-header__detail-block" style="padding-right: 0px;">
+                            <lightning:input type="date" label="Expiration Date"  name="date" value="{!v.simpleRecord.ExpireQuote__c}" aura:id="ExpirationDateId" disabled="true" />
+                        </li>
+                        <li class="slds-page-header__detail-block">
+                            <lightning:input type="date" label="In Hands Date" name="date" value="{!v.simpleRecord.In_Hands_Date__c}" aura:id="inhanddateId" disabled="true" />
+                        </li>
+                        <li class="slds-page-header__detail-block" style="padding-left: 0px; padding-right: 0px;">
+                            <lightning:input type="date" label="Do Not Ship Before" name="date" value="{!v.simpleRecord.Do_Not_Ship_Before__c}" aura:id="DoNotShipBeforeId" disabled="true" />
+                        </li>
+                        <li class="slds-page-header__detail-block">
+                            <lightning:input label="Discount" name="text" aura:id="DiscountId" disabled="true" />
+                        </li>
+
+                    </ul-->
+                </div>
+                <div class="slds-size_1-of-2 " >
+                   <div class=" slds-grid slds-wrap slds-float_right" style="width: 277px;" >
+                     <div class="slds-size_1-of-2" >
+                         <ul>
+                            <li>
+                                
+                                            <h2 class="subtotal" >Subtotal</h2>
+                               
+                            </li>
+                            <li>
+                                
+                                            <h2 class="subtotal" >Discount Item</h2>
+                               
+                            </li>
+
+                            <li>
+                                
+                                            <h2 class="subtotal">Tax</h2>
+                                
+                            </li>
+                            <li>
+                                
+                                            <h2 class="subtotal" >Shipping Cost</h2>
+                                
+                            </li>
+
+                            <li>
+                                
+                                            <h2 class="total">Total</h2>
+                                
+                            </li>
+
+                        </ul>
+
+                    </div>
+                       <div class="slds-size_1-of-2"  >
+
+                        <ul>
+                            <li>
+                               
+                                            <h2 class="fontvcss">Value</h2>
+                              
+                            </li>
+                            <li>
+                                
+                                            <h2 class="fontvcss">Value</h2>
+                                
+                            </li>
+
+                            <li>
+                                
+                                            <h2 class="fontvcss">Value</h2>
+                                
+                            </li>
+                            <li>
+                                
+                                            <h2 class="fontvcss">Value</h2>
+                               
+                            </li>
+
+                            <li>
+                               
+                                            <h2 class="total" >Value</h2>
+                              
+                            </li>
+
+                        </ul>
+
+                    </div>
+                    <div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+            <div class=" slds-grid slds-wrap">
+                
+                <div class="slds-size_1-of-2">
+                    <div class="slds-grid slds-wrap ">
+                        
+                        
+                       
+                        <div class="slds-size_1-of-2">
+                             <div class="slds-form-element slds-form-element_edit slds-hint-parent">
+                               <label class="slds-form-element__label" for="assigned-to">Art Approval Link</label>
+                                 <div class="slds-form-element__control">
+                                     <lightning:formattedUrl  value="http://develop.sandbox1.yeticustomshop.com/customer-approval/b801460d-66b2-49ea-8bb3-101c10bc8037" />
+                                 </div>
+                              </div>
+                        </div>
+                        <div class="slds-page-header__detail-block  slds-size_1-of-2">
+                             <div class="slds-form-element slds-form-element_edit slds-hint-parent">
+                               <label class="slds-form-element__label" for="assigned-to">Quote Link</label>
+                                 <div class="slds-form-element__control">
+                                     <lightning:formattedUrl  value="http://develop.sandbox1.yeticustomshop.com/order-estimate/af1616df-5c65-432f-bf15-237f46b5b507" />
+                                 </div>
+                              </div>
+                        </div>
+                        
+
+                    </div>
+                    <ul class="slds-grid slds-wrap">
+                        
+                       
+                       
+                        
+                        <li class="slds-page-header__detail-block slds-size_1-of-2">
+                             <div class="slds-form-element slds-form-element_edit slds-hint-parent">
+                               <label class="slds-form-element__label" for="assigned-to">Help Scout Link</label>
+                                 <div class="slds-form-element__control">
+                                     <lightning:formattedUrl  value="https://developer.helpscout.com/help-desk-api/conversations/create/" />
+                                 </div>
+                              </div>
+                        </li>
+                        
+                        
+                        
+
+                    </ul>
+                </div>
+                 <div class="slds-size_1-of-2">
+                     <div class="slds-grid slds-wrap" >
+                     
+                     </div>
+                     <div class="slds-grid slds-wrap">
+                      
+                             <div class="slds-size_1-of-2">
+                               
+                                 
+                              </div>
+                       
+                    
+                             <div class="slds-size_1-of-2">
+                             <h2 class="quoteexpirecss" >Quote Expires: {!v.simpleRecord.Expires__c}</h2>  
+                                 
+                              </div>
+                        
+                     </div>
+                    
+                </div>
+            </div>
+
+        </div>
+        
+
+    </div>
+</aura:component>

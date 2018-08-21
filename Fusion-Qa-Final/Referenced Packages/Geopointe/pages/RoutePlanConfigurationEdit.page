@@ -1,0 +1,956 @@
+<apex:page standardController="geopointe__GP_Route_Plan_Configuration__c" tabStyle="geopointe__GP_Route_Plan_Configuration__c" extensions="geopointe.RoutePlanConfigurationEditExtension,geopointe.Localization,geopointe.RemoteAction,geopointe.OrgSettings" sidebar="true" lightningStylesheets="false" standardStylesheets="false">
+	
+	<apex:slds />
+
+	<script src="{!URLFOR($Page.translations)}"></script> <!-- Geopointe translations -->
+    <script src="{!URLFOR($Resource.jquery, '/jquery-2.2.4.min.js')}"></script> <!-- core jQuery -->
+    <script src="{!URLFOR($Resource.jquery, '/ui/js/jquery-ui-1.9.2.custom.min.js')}"></script> <!-- jQuery UI -->
+    <script src="{!URLFOR($Resource.jquery, '/mixpanel/mixpanel.js')}"></script><!-- Mix Panel -->
+    <script src="{!URLFOR($Resource.jquery, '/fieldSelector/jquery.fieldselector.js')}"></script> <!-- fieldSelector plugin -->
+    <script src="{!URLFOR($Resource.jquery, '/js/common.js')}"></script> <!-- Generic JS use across entire app -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/lodash.js')}"></script> <!-- lodash.js JavaScript utility library -->
+    <script src="{!URLFOR($Resource.js_api_v1)}"></script> <!-- Geopointe Javascript api -->
+
+    <link href="{!URLFOR($Resource.jquery, '/js/lib/jqueryui-editable/css/jqueryui-editable.css')}" rel="stylesheet"/>
+	<apex:stylesheet value="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700"/> <!-- open sans font -->
+	<apex:stylesheet value="{!URLFOR($Resource.geopointe__jquery, '/ui/css/smoothness/jquery-ui-1.9.2.custom.min.css')}"/> <!-- jQuery UI CSS -->
+	<apex:stylesheet value="{!URLFOR($Resource.geopointe__jquery, '/fieldSelector/css/fieldselector.css')}"/> <!-- FieldSelector plugin CSS -->
+    <apex:stylesheet value="{!URLFOR($Resource.geopointe__jquery, '/plugins/minicolor/jquery.minicolors.css')}"/> <!-- Color picker plugin CSS -->
+	<apex:stylesheet value="{!URLFOR($Resource.geopointe__jquery, '/css/common/common.css')}"/> <!-- Common geopointe CSS -->
+    <apex:stylesheet value="{!URLFOR($Resource.geopointe__jquery, '/lib/maki/maki-sprite.css')}"/> <!-- Maki icon css -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/jqueryui-editable/js/jqueryui-editable.min.js')}"></script>
+    
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/angular-1.5.8.min.js')}"></script> <!-- Angular -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/angular-animate-1.5.8.min.js')}"></script>
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular-ui-bootstrap/ui-bootstrap-tpls.js')}"></script>
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/angular-cookies-1.5.8.min.js')}"></script> <!-- Angular -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/locales/angular-locale_'& angularLocaleForCurrentUser &'.js')}"></script> <!-- Angular -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/lib/ui.sortable.min.js')}"></script> <!-- Angular jQuery UI sortable-->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/lib/date.js')}"></script> <!-- Angular jQuery UI date picker-->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/moment/moment.min.js')}"></script> <!-- Moment.js for time formatting -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/moment/moment-timezone.min.js')}"></script> <!-- Moment.js timezone functionality -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/moment/lang/'& momentJSLangForCurrentUser &'.js')}"></script> <!-- Moment.js language file -->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/lib/angular-moment.min.js')}"></script> <!-- Angular Moment.js-->
+    <script src="{!URLFOR($Resource.jquery, '/js/lib/angular/lib/select2.js')}"></script> <!-- Angular select2-->
+	<script src="{!URLFOR($Resource.jquery, '/js/lib/bluebird-3.4.7.min.js')}"></script>
+    <script src="{!URLFOR($Resource.jquery, 'js/lib/toastr/toastr.min.js')}"></script> <!-- toasr popup js-->
+    <script src="{!$Resource.GeopointeJS}"></script> <!-- Geopointe universal functions -->
+    <script type="text/javascript" src="{!URLFOR($Resource.jquery, 'js/lib/tooltipster/tooltipster.bundle.min.js')}"></script>
+    <script src="{!URLFOR($Resource.jquery, '/js/geopointeApp.js')}"></script> <!-- Starts the Angular geopointe app -->
+
+	<script src="{!URLFOR($Resource.jquery, '/js/controllers/RoutePlanConfigurationController.js')}"></script> <!-- Starts the Angular geopointe app -->
+	<script src="{!URLFOR($Resource.jquery, '/js/directives/manageRoutePlanUsers.js')}"></script> <!-- Manage Route Plan Users Directive -->
+	<script src="{!URLFOR($Resource.jquery, '/js/directives/manageFilters.js')}"></script>
+	<script src="{!URLFOR($Resource.jquery, '/js/directives/picklistInput.js')}"></script>
+
+	<!-- Lightning -->
+	<apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed == 'Theme4d'}">
+	    <style type="text/css">
+	    	body{
+	    		margin: -1px !important;
+	    		background: #b0c4df !important;
+	    	}
+	    </style>
+	</apex:outputPanel>
+
+	<!-- Classic -->
+	<apex:outputPanel layout="none" rendered="{!$User.UIThemeDisplayed == 'Theme3'}">
+	    <style type="text/css">
+	    	.slds-scope .slds-table td {
+			    display: table-cell;
+			    vertical-align: inherit;
+			}
+	    </style>
+	</apex:outputPanel>
+
+	<style type="text/css">
+		.overview .slds-form-element__control {
+			min-height: 32px;
+		}
+		.overview .slds-form-element .slds-form-element__label{
+			top: 5px;
+			position: relative;
+		}
+		.overview .slds-section__content{
+			padding-top: 0rem !important;
+			padding-bottom: .75rem;
+		}
+		.buttonGroupDisabledWithValue{
+			background: #ecebea !important;
+    		color: #222222 !important;
+    		cursor: not-allowed !important;
+		}
+
+		.listRelatedObject .pbHeader     { display: none; }
+		.listRelatedObject .actionColumn { display: none; }
+
+		.wizard label.wizard-question { font-size: 110% !important; color: rgb(62, 62, 60) !important; }
+		.wizard .input-help { font-size: 90%; color: rgb(150, 148, 146); }
+	</style>
+
+    <script type="text/javascript">
+		var gpResourceJquery = '{!URLFOR($Resource.jquery)}';
+		var gpAssetSldsSprites = {utility:'{!URLFOR($Asset.SLDS, "assets/icons/utility-sprite/svg/symbols.svg")}',standard:'{!URLFOR($Asset.SLDS, "assets/icons/standard-sprite/svg/symbols.svg")}'};
+		var gpRemoteAction = '{!$RemoteAction.RemoteAction.doRemoteAction}';
+		var gpRemoteActionReadOnly = '{!$RemoteAction.RemoteAction.doRemoteActionReadOnly}';
+		var gpOrgSettings = {!orgSettingsJSON};
+		var namespacePrefix = '{!namespacePrefix}';
+    </script>
+
+	<div class="slds-scope ng-cloak" id="ngApp" ng-app="GeopointeApp" ng-controller="RoutePlanConfigurationController">
+
+		<div class="slds-brand-band slds-brand-band_medium"/>
+
+		<div class="slds-page-header slds-m-around_small" ng-show="routePlannerEnabled">
+			<div class="slds-grid">
+				<div class="slds-col slds-has-flexi-truncate">
+					<div class="slds-media slds-no-space slds-grow">
+						<div class="slds-media__figure">
+							<span class="slds-icon_container slds-icon-standard-business-hours">
+								<svg class="slds-icon" aria-hidden="true">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#business_hours')}" />
+								</svg>
+							</span>
+						</div>
+						<div class="slds-media__body">
+							<nav>
+								<ol class="slds-breadcrumb slds-line-height_reset">
+									<li class="slds-breadcrumb__item">
+										<span>Geopointe Route Plan Configuration</span>
+									</li>
+								</ol>
+							</nav>
+							<h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" ng-cloak="true">
+								<span ng-show="AND(rpc, NOT(rpc.id))">New</span>
+								<span ng-show="rpc.id">{{rpc.name}}</span>
+							</h1>
+						</div>
+					</div>
+				</div>
+
+				<div class="slds-col slds-no-flex slds-grid slds-align-top">
+					<div class="slds-button-group" role="group">
+						<apex:outputLink rendered="{!NOT(ISNULL(rpc.id))}" value="{!URLFOR($Action.GP_Route_Plan_Configuration__c.Delete, rpc.id, [retURL=$CurrentPage.URL])}" styleClass="slds-button slds-button_neutral">Delete</apex:outputLink>
+					</div>
+				</div>
+			</div>
+			<ul class="slds-grid slds-page-header__detail-row" ng-if="rpc.id">
+				<li class="slds-page-header__detail-block">
+					<p class="slds-text-title slds-truncate slds-m-bottom_xx-small">Status</p>
+					<p class="slds-text-body_regular slds-truncate">
+						<span ng-if="rpc.status == 'DRAFT'">Draft</span>
+						<span ng-if="rpc.status == 'PUBLISHED'">Published</span>
+						<span ng-if="rpc.status == 'EXPIRED'">Expired</span>
+					</p>
+				</li>
+				<li class="slds-page-header__detail-block">
+					<p class="slds-text-title slds-truncate slds-m-bottom_xx-small">Activation Date</p>
+					<p class="slds-text-body_regular slds-truncate">
+						{{rpc.startDate | amDateFormat:'L'}}
+					</p>
+				</li>
+				<li class="slds-page-header__detail-block">
+					<p class="slds-text-title slds-truncate slds-m-bottom_xx-small" title="Field 3">Expiration Date</p>
+					<p class="slds-text-body_regular slds-truncate">
+						<span ng-if="rpc.endDate">{{rpc.endDate | amDateFormat:'L'}}</span>
+						<span ng-if="!rpc.endDate">-</span>
+					</p>
+				</li>
+			</ul>
+		</div>
+
+		<div class="slds-vertical-tabs slds-card slds-m-horizontal_small" ng-show="routePlannerEnabled">
+			<ul class="slds-vertical-tabs__nav" role="tablist" aria-orientation="vertical">
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'overview'}" ng-if="rpc.status == 'PUBLISHED' || rpc.status == 'EXPIRED'"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('overview')">Overview</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'intro'}"  ng-if="rpc.status == 'DRAFT'"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('intro')">Introduction</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'basic'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('basic')">Basic Information</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'locations'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('locations')">Locations to Visit</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'outputs'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('outputs')">Output Objects</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'targets'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('targets')">Visit Targets</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'hours'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('hours')">Business Hours</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'visits'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('visits')">Completed Visits</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'users'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('users')">Manage Users</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'analyze'}"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('analyze')">Run Analysis</a></li>
+				<li class="slds-vertical-tabs__nav-item" ng-class="{'slds-is-active': selectedTab == 'deploy'}" ng-if="rpc.status == 'DRAFT'"><a class="slds-vertical-tabs__link" ng-click="setSelectedTab('deploy')">Publish Plan</a></li>
+			</ul>
+
+			<!-- Overview -->
+			<div class="slds-vertical-tabs__content overview" ng-show="selectedTab == 'overview'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Overview</h3>
+
+					<div class="slds-notify_container slds-is-relative slds-p-bottom_small" ng-if="showPublishSuccessMessage">
+						<div class="slds-notify slds-notify_toast slds-theme_success" role="alert" style="min-width: auto;">
+							<span class="slds-assistive-text">success</span>
+							<span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+								<svg class="slds-icon slds-icon_small" aria-hidden="true">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#success')}" />
+								</svg>
+							</span>
+							<div class="slds-notify__content">
+								<h2 class="slds-text-heading_small" style="margin: 0px;">Route Plan Confguration Successfully Published!</h2>
+							</div>
+						</div>
+					</div>
+
+					<div class="slds-scoped-notification slds-media slds-media_center slds-scoped-notification_light slds-m-bottom_medium" role="status">
+						<div class="slds-media__figure">
+							<span class="slds-icon_container slds-icon-utility-info" title="information">
+								<svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true" style="fill: #ff5722;">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#info')}" />
+								</svg>
+								<span class="slds-assistive-text">information</span>
+							</span>
+						</div>
+						<div class="slds-media__body">
+							<p>If you edit this Configuration, it may cause users' scheduled visits and routes to be incorrect. You should notify your users to re-optimize their Route Plans.</p>
+						</div>
+					</div>
+
+					<div class="slds-section" ng-class="{'slds-is-open': expandUserSection}">
+						<h3 class="slds-section__title">
+							<button class="slds-button slds-section__title-action" ng-click="expandUserSection = !expandUserSection">
+							
+								<svg class="slds-section__title-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#switch')}" />
+								</svg>
+								<span class="slds-truncate" title="Section Title">Route Plans ({{rpc.numUsers}})</span>
+							</button>
+						</h3>
+
+						<div class="slds-section__content slds-m-horizontal_small">
+							<p>Additional Users can be added in the Manage Users tab.</p>
+							<apex:relatedList list="Route_Plans__r" />
+						</div>
+					</div>
+
+					<div class="slds-section slds-is-open">
+						<h3 class="slds-section__title slds-theme_shade">
+							<span class="slds-truncate slds-p-horizontal_small" title="Locations to Visit">Locations to Visit</span>
+						</h3>
+						<div aria-hidden="false" class="slds-section__content slds-m-horizontal_small">
+							<div class="slds-grid slds-gutters slds-wrap">
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Locations Map Object</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.mapObjectDisplayName}}</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Visitor defined by</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.mapObjectUserFieldLabel}}</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Include bad geocodes?</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static" ng-if="rpc.includeBadGeocodes">Yes</div>
+										<div class="slds-form-element__static" ng-if="!rpc.includeBadGeocodes">No</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Has additional filters?</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static" ng-if="rpc.locationFilters.length">Yes</div>
+										<div class="slds-form-element__static" ng-if="!rpc.locationFilters.length">No</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="slds-section slds-is-open">
+						<h3 class="slds-section__title slds-theme_shade">
+							<span class="slds-truncate slds-p-horizontal_small" title="Locations to Visit">Output Objects</span>
+						</h3>
+						<div aria-hidden="false" class="slds-section__content slds-m-horizontal_small">
+							<div class="slds-grid slds-gutters slds-wrap">
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Create Geopointe Routes?</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.createRoutes}}</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Scheduled visits saved as</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.scheduledSobjectLabel || 'Not Saved'}}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="slds-section slds-is-open">
+						<h3 class="slds-section__title slds-theme_shade">
+							<span class="slds-truncate slds-p-horizontal_small" title="Locations to Visit">Visit Targets</span>
+						</h3>
+						<div aria-hidden="false" class="slds-section__content slds-m-horizontal_small">
+							<div class="slds-grid slds-gutters slds-wrap">
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Default Frequency</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.freqNumVisits}} visit(s) every {{rpc.freqNumTimeUnits + ' ' + rpc.freqTimeUnit + '(s)'}}</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Default Duration</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.visitDuration}} mins</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Custom # of visits defined in</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.freqNumVisitsFieldLabel || ' -- '}}</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Custom visit duration defined in</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.visitDurationFieldLabel || ' -- '}}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="slds-section slds-is-open">
+						<h3 class="slds-section__title slds-theme_shade">
+							<span class="slds-truncate slds-p-horizontal_small" title="Locations to Visit">Completed Visits</span>
+						</h3>
+						<div aria-hidden="false" class="slds-section__content slds-m-horizontal_small">
+							<div class="slds-grid slds-gutters slds-wrap">
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Completed visits saved as</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static">{{rpc.completedSobjectLabel}}</div>
+									</div>
+								</div>
+								<div class="slds-form-element slds-col slds-size_1-of-2 slds-max-small-size_1-of-1">
+									<label class="slds-form-element__label">Has additional filters?</label>
+									<div class="slds-form-element__control slds-border_bottom">
+										<div class="slds-form-element__static" ng-if="rpc.completedFilters.length">Yes</div>
+										<div class="slds-form-element__static" ng-if="!rpc.completedFilters.length">No</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Introduction -->
+			<div class="slds-vertical-tabs__content" ng-show="selectedTab == 'intro'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Introduction to Route Plans</h3>
+					<p>Geopointe Route Plans enable your users to maximize efficiency by automatically scheduling visits and building routes. For example, 
+						a Route Plan Configuration can be setup so that a salesperson should attempt to visit every one of their accounts at least three times within 
+						the next three months, but high priority accounts should have four visits. This all happens automatically behind the scenes. All the users 
+						need to do is pick up their phone and go! Sounds pretty cool, right? Click the Get Started button below and we will walk you 
+						through the process of setting up a Route Plan.</p>
+					
+					<p class="slds-align_absolute-center"><img height="200px" style="height: 200px;" src="{!URLFOR($Resource.images, '/routePlanner/openRoad.png')}"/></p>
+
+					<p class="slds-align_absolute-center"><button ng-click="setSelectedTab('basic')" class="slds-button slds-button_success">Get Started!</button></p>
+				</div>
+			</div>
+
+			<!-- Basic Information -->
+			<div class="slds-vertical-tabs__content wizard" ng-show="selectedTab == 'basic'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Basic Information</h3>
+
+					<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['name']}">
+						<label class="wizard-question slds-form-element__label">Route Plan Configuration Name <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">Users' Route Plans will be named: "Route Plan Configuration Name - User Name"</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<input type="text" class="slds-input" placeholder="" maxlength="80" ng-model="rpc.name" />
+							<div class="slds-form-element__help">{{fieldErrors['name']}}</div>
+						</div>
+					</div>
+					<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['startDate']}">
+						<label class="wizard-question slds-form-element__label">What is the first date that can be scheduled? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">This activation date is the first schedulable day with this configuration.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<input type="date" class="slds-input" placeholder="" ng-model="rpc.startDate" ng-disabled="readOnly"/>
+							<div class="slds-form-element__help">{{fieldErrors['startDate']}}</div>
+						</div>
+					</div>
+					<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['endDate']}">
+						<label class="wizard-question slds-form-element__label">What is the last date that can be scheduled?</label>
+						<div class="input-help slds-m-vertical_xx-small">This expiration date is the last schedulable day with this configuration. This can be left blank.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<input type="date" class="slds-input" placeholder="" ng-model="rpc.endDate" />
+							<div class="slds-form-element__help">{{fieldErrors['endDate']}}</div>
+						</div>
+					</div>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('basic','basic')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('basic','locations')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div> 
+
+			<!-- Locations to Visit -->
+			<div class="slds-vertical-tabs__content wizard" ng-show="selectedTab == 'locations'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Input Object Selection</h3>
+					<p class="step-title">These questions focus on how Route Planner selects the records to visit.</p>
+
+					<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['mapObjectName']}">
+						<label class="wizard-question slds-form-element__label">Where are you going? <abbr class="slds-required" title="required" ng-if="!readOnly && rpc.status != 'PUBLISHED'">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">Which Geopointe Map Object should Route Planner use to know where to visit?</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<select class="slds-select" ng-model="rpc.mapObjectName" ng-change="mapObjectChanged()" ng-disabled="readOnly || rpc.status == 'PUBLISHED'">
+								<option value="__none__">Please select...</option>
+								<option ng-repeat="mo in mapObjects" value="{{mo.Name}}">{{mo.DisplayName}}</option>
+							</select>
+							<div class="slds-form-element__help">{{fieldErrors['mapObjectName']}}</div>
+						</div>
+					</div>
+					<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['mapObjectUserField']}">
+						<label class="wizard-question slds-form-element__label">Who is going there? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">Your choice determines the way Route Planner knows who visits a particular record. It's typically the record owner.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2 slds-align-bottom">
+							<select class="slds-select" ng-model="rpc.mapObjectUserField" ng-disabled="readOnly">
+								<option value="__none__">Please select...</option>
+								<option ng-repeat="fld in mapObjectFields" value="{{fld.name}}"
+										ng-if="(fld.name == 'ownerid' || fld.referenceToObjectName == 'User') && fld.name != 'createdbyid' && fld.name != 'lastmodifiedbyid'"
+									>{{fld.label}}</option>
+							</select>
+							<div class="slds-form-element__help">{{fieldErrors['mapObjectUserField']}}</div>
+						</div>
+					</div>
+					<div class="slds-m-bottom_medium">
+						<label class="wizard-question slds-form-element__label">Include poor quality geocodes? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">Should Route Planner include records that could not be accurately geocoded? We recommend "No."</div>
+						<label class="slds-checkbox_toggle slds-grid slds-size_1-of-2">
+							<input type="checkbox" name="include-bad-geocodes" ng-model="rpc.includeBadGeocodes" value="rpc.includeBadGeocodes" aria-describedby="include-bad-geocodes" />
+							<span id="include-bad-geocodes" class="slds-checkbox_faux_container slds-align_absolute-center slds-p-top_x-small" aria-live="assertive">
+								<span class="slds-checkbox_faux"></span>
+								<span class="slds-checkbox_on slds-p-horizontal_x-small">Yes</span>
+								<span class="slds-checkbox_off slds-p-horizontal_x-small">No</span>
+							</span>
+						</label>
+					</div>
+					<div>
+						<label class="wizard-question slds-form-element__label">Any additional filters?</label>
+						<div class="input-help slds-m-vertical_xx-small">Optionally add filters to limit which records Route Planner includes in its scheduling.</div>
+						<div class="slds-box slds-box_small slds-m-top_small">
+							<manage-filters filters="rpc.locationFilters" filter-logic="rpc.locationFilterLogic" sobject-name="rpc.mapObjectSobjectName" read-only="readOnly"/>
+						</div>
+					</div>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('locations','locations')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('locations','outputs')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div> 
+
+			<!-- Output Objects -->
+			<div class="slds-vertical-tabs__content wizard" ng-show="selectedTab == 'outputs'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Output Objects</h3>
+					<p class="step-title">These questions focus on how Route Planner saves the scheduling results.</p>
+
+					<div class="slds-box" ng-if="rpc.mapObjectName == '__none__'">
+						You must complete your Input Object Selection first.
+					</div>
+
+					<div class="slds-m-bottom_medium slds-is-relative" ng-if="rpc.mapObjectName != '__none__'">
+						<div class="slds-backdrop slds-is-absolute" ng-class="{'slds-backdrop_open': showOutputObjectSpinner}">
+							<div role="status" class="slds-spinner slds-spinner_large">
+								<span class="slds-assistive-text">Loading</span>
+								<div class="slds-spinner__dot-a"></div>
+								<div class="slds-spinner__dot-b"></div>
+							</div>
+						</div>
+
+						<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['createRoutes']}">
+							<label class="wizard-question slds-form-element__label">Create Geopointe Routes? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+							<div class="input-help slds-m-vertical_xx-small">Yes, No, or let each user decide for themselves. If you select "No" or "User Controlled," you must also select a Visit Object.</div>
+							<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+								<select class="slds-select" ng-model="rpc.createRoutes" ng-disabled="readOnly">
+									<option value="Yes">Yes</option>
+									<option value="No">No</option>
+									<option value="User Controlled" title="Each User can control whether Geopointe Routes are created for them.">User Controlled</option>
+								</select>
+								<div class="slds-form-element__help">{{fieldErrors['createRoutes']}}</div>
+							</div>
+						</div>
+
+						<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledChildRelationshipName']}">
+							<label class="wizard-question slds-form-element__label">What object should Route Planner use to save visits? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+							<div class="input-help slds-m-vertical_xx-small">Don't see a custom object in the list below? Make sure the object has a lookup to your selected Map Object ({{rpc.mapObjectSobjectName}}). It will also need a lookup to Geopointe Route Plan object.</div>
+							<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+								<select class="slds-select" ng-model="rpc.scheduledChildRelationshipName" ng-change="outputObjectChanged()" ng-disabled="readOnly">
+									<option value="__none__">Don't save visits</option>
+									<option ng-repeat="obj in childObjects" value="{{obj.relationshipName}}">{{obj.label}}</option>
+								</select>
+								<div class="slds-form-element__help">{{fieldErrors['scheduledChildRelationshipName']}}</div>
+							</div>
+						</div>
+
+						<div ng-show="rpc.scheduledChildRelationshipName != '__none__'">
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledName']}">
+								<label class="wizard-question slds-form-element__label">What should Route Planner name the visit records? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+								<div class="input-help slds-m-vertical_xx-small">We'll automatically append the name of the location visited.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<input type="text" class="slds-input" ng-model="rpc.scheduledName" ng-disabled="readOnly" maxlength="30"/>
+									<div class="slds-form-element__help">{{fieldErrors['scheduledName']}}</div>
+								</div>
+							</div>
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledRoutePlanField']}">
+								<label class="wizard-question slds-form-element__label">What field should Route Planner use to associate the visit to a Route Plan? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+								<div class="input-help slds-m-vertical_xx-small">Select a Geopointe Route Plan lookup field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.scheduledRoutePlanField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in outputObjectsFields" value="{{fld.name}}"
+											ng-if="(fld.referenceToObjectName == namespacePrefix + 'GP_Route_Plan__c' || fld.referenceToObjectName == 'GP_Route_Plan__c') && fld.isCreateable"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['scheduledRoutePlanField']}}</div>
+								</div>
+							</div>
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledWhoField']}">
+								<label class="wizard-question slds-form-element__label">What field should Route Planner use to associate the user (visitor) to the visit? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+								<div class="input-help slds-m-vertical_xx-small">Select a User lookup field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.scheduledWhoField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in outputObjectsFields" value="{{fld.name}}"
+											ng-if="fld.referenceToObjectName == 'User' && fld.isCreateable"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['scheduledWhoField']}}</div>
+								</div>
+							</div>
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledWhenField']}">
+								<label class="wizard-question slds-form-element__label">What field should Route Planner use to save the date of the visit?</label>
+								<div class="input-help slds-m-vertical_xx-small">Select a Date field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.scheduledWhenField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in outputObjectsFields" value="{{fld.name}}"
+											ng-if="fld.type == 'DATE' && fld.isCreateable"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['scheduledWhenField']}}</div>
+								</div>
+							</div>
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledStartField']}">
+								<label class="wizard-question slds-form-element__label">What field should Route Planner use to save the start time of the visit?</label>
+								<div class="input-help slds-m-vertical_xx-small">Select a Datetime field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.scheduledStartField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in outputObjectsFields" value="{{fld.name}}"
+											ng-if="fld.type == 'DATETIME' && fld.isCreateable"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['scheduledStartField']}}</div>
+								</div>
+							</div>
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['scheduledEndField']}">
+								<label class="wizard-question slds-form-element__label">What field should Route Planner use to save the end time of the visit?</label>
+								<div class="input-help slds-m-vertical_xx-small">Select a Date field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.scheduledEndField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in outputObjectsFields" value="{{fld.name}}"
+											ng-if="fld.type == 'DATETIME' && fld.isCreateable"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['scheduledEndField']}}</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('outputs','outputs')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('outputs','targets')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div>
+
+			<!-- Visit Targets -->
+			<div class="slds-vertical-tabs__content wizard" ng-show="selectedTab == 'targets'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Visit Targets</h3>
+
+					<p>
+						When considering how often you need to visit your clients, consider these questions:
+					</p>
+					<ul>
+						<li>In general, how often should your clients be visited?</li>
+						<li>Do you prioritize clients for more or fewer visits?</li>
+						<li>What's the time span you allot for making <b>three or four</b> visits?</li>
+					</ul>
+
+					<div class="slds-scoped-notification slds-media slds-media_center slds-m-vertical_large" role="status" style="background-color: #fffcdd;">
+						<div class="slds-media__figure">
+							<span class="slds-icon_container" title="information">
+								<svg class="slds-icon slds-icon_medium slds-icon-text-default" aria-hidden="true">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#note')}" />
+								</svg>
+								<span class="slds-assistive-text">information</span>
+							</span>
+						</div>
+						<div class="slds-media__body">
+						<p style="margin-bottom:.5rem">Route Planner performs best when it has some wiggle room to make optimal scheduling decisions.</p>
+						<p style="margin-top:.5rem">For example, if you'd like your clients visited monthly, set your target frequency to 3 times in 3 months. <span style="font-size: 90%">(<a ng-click="showModal = true">Why?</a>)</span></p>
+						</div>
+					</div>
+
+					<p class="slds-m-vertical_large">
+						Perhaps you also have some far away clients and high priority clients that require a different number of visits: 2 times every 3 months and 6 times every 3 months.  You'll be able to tell Route Planner that.
+					</p>
+
+					<h3 class="slds-section__title slds-theme_shade slds-m-bottom_none">
+						<span class="slds-truncate slds-p-horizontal_small">Frequency</span>
+					</h3>
+					<div class="slds-m-bottom_medium slds-m-top_large" ng-class="{'slds-has-error': fieldErrors['freqNumTimeUnits']}">
+						<label class="wizard-question slds-form-element__label">What is the time period? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">Ideally, this is 3 months or less, but long enough to visit multiple times.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<div class="slds-truncate" ng-class="{'slds-has-error': fieldErrors['freqNumTimeUnits']}">
+								<input type="number" class="slds-input" ng-model="rpc.freqNumTimeUnits" style="width: 70px;" ng-disabled="readOnly"/>
+								<select class="slds-select" ng-model="rpc.freqTimeUnit" style="width: 120px;" ng-disabled="readOnly">
+									<option value="__none__">Please Select...</option>
+									<option value="day">Day(s)</option>
+									<option value="week">Week(s)</option>
+									<option value="month">Month(s)</option>
+								</select>
+								<div class="slds-form-element__help">{{fieldErrors['freqNumTimeUnits']}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="slds-m-vertical_medium" ng-class="{'slds-has-error': fieldErrors['freqNumVisits']}">
+						<label class="wizard-question slds-form-element__label">Typically, how many times should each place get visited in the time period defined above? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">Ideally, this is more than 1.  If this is 1, consider doubling or tripling your time period above.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<div class="slds-truncate" ng-class="{'slds-has-error': fieldErrors['freqNumVisits']}">
+								<input type="number" class="slds-input" ng-model="rpc.freqNumVisits" style="width: 70px;" ng-disabled="readOnly"/>
+								<div class="slds-form-element__help">{{fieldErrors['freqNumVisits']}}</div>
+							</div>
+						</div>
+					</div>
+					<div class="slds-m-vertical_medium" ng-class="{'slds-has-error': fieldErrors['freqNumVisitsField']}">
+						<label class="wizard-question slds-form-element__label">Will some locations require more/fewer visits?  If so, where should Route Planner look to find the different number of visits? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">If this number field on the {{rpc.mapObjectSobjectName}} record is populated, Route Planner will use that as the target number of visits for that record.  If blank, it will use the default number of visits above.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<select class="slds-select" ng-model="rpc.freqNumVisitsField" ng-disabled="readOnly">
+								<option value="__none__">All records get visited the same number of times</option>
+								<option ng-repeat="fld in mapObjectFields" value="{{fld.name}}"
+									ng-if="(fld.type == 'INTEGER' || fld.type == 'DOUBLE') && fld.isLocationField == false"
+								>{{fld.label}}</option>
+							</select>
+						</div>
+					</div>
+
+					<h3 class="slds-section__title slds-theme_shade slds-m-bottom_none">
+						<span class="slds-truncate slds-p-horizontal_small">Duration</span>
+					</h3>
+					<div class="slds-m-bottom_medium slds-m-top_large" ng-class="{'slds-has-error': fieldErrors['visitDuration']}">
+						<label class="wizard-question slds-form-element__label">Typically, how long is each visit (in minutes)? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">You may want to add extra time for parking, etc.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<input type="number" class="slds-input" ng-model="rpc.visitDuration" style="width: 70px;" ng-disabled="readOnly"/>
+							<div class="slds-form-element__help">{{fieldErrors['visitDuration']}}</div>
+						</div>
+					</div>
+					<div class="slds-m-vertical_medium" ng-class="{'slds-has-error': fieldErrors['mapObjectName']}">
+						<label class="wizard-question slds-form-element__label">Will some locations require shorter/longer visits?  If so, where should Route Planner look to find the different visit length? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="input-help slds-m-vertical_xx-small">If this number field on the {{rpc.mapObjectSobjectName}} record is populated, Route Planner will use that as the visit length for that record. If blank, it will use the default visit length above.</div>
+						<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+							<select class="slds-select" ng-model="rpc.visitDurationField" ng-disabled="readOnly">
+								<option value="__none__">All visits are the same length</option>
+								<option ng-repeat="fld in mapObjectFields" value="{{fld.name}}"
+									ng-if="(fld.type == 'INTEGER' || fld.type == 'DOUBLE') && fld.isLocationField == false"
+								>{{fld.label}}</option>
+							</select>
+						</div>
+					</div>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('targets','targets')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('targets','hours')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div>
+
+			<!-- Business Hours -->
+			<div class="slds-vertical-tabs__content wizard" ng-show="selectedTab == 'hours'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Business Hours</h3>
+					<p class="step-title">These questions focus on when your clients may be visited.</p>
+
+					<div class="slds-form-element slds-m-vertical_large slds-col slds-size_1-of-2" ng-class="{'slds-has-error': fieldErrors['visitingHours']}">
+						<label class="wizard-question slds-form-element__label slds-m-bottom_small">On what days can visits be scheduled? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="slds-form-element__control">
+							<fieldset class="slds-form-element">
+								<div class="slds-form-element__control">
+									<div class="slds-checkbox_button-group">
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="sunday" value="sunday" name="checkbox" ng-checked="rpc.visitingHours['Sun']" ng-click="visitDaySelected('Sun',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="sunday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Sun']}">
+												<span class="slds-checkbox_faux">Sun</span>
+											</label>
+										</span>
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="monday" value="monday" name="checkbox" ng-checked="rpc.visitingHours['Mon']" ng-click="visitDaySelected('Mon',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="monday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Mon']}">
+												<span class="slds-checkbox_faux">Mon</span>
+											</label>
+										</span>
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="tuesday" value="tuesday" name="checkbox" ng-checked="rpc.visitingHours['Tue']" ng-click="visitDaySelected('Tue',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="tuesday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Tue']}">
+												<span class="slds-checkbox_faux">Tue</span>
+											</label>
+										</span>
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="wednesday" value="wednesday" name="checkbox" ng-checked="rpc.visitingHours['Wed']" ng-click="visitDaySelected('Wed',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="wednesday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Wed']}">
+												<span class="slds-checkbox_faux">Wed</span>
+											</label>
+										</span>
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="thursday" value="thursday" name="checkbox" ng-checked="rpc.visitingHours['Thu']" ng-click="visitDaySelected('Thu',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="thursday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Thu']}">
+												<span class="slds-checkbox_faux">Thu</span>
+											</label>
+										</span>
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="friday" value="friday" name="checkbox" ng-checked="rpc.visitingHours['Fri']" ng-click="visitDaySelected('Fri',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="friday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Fri']}">
+												<span class="slds-checkbox_faux">Fri</span>
+											</label>
+										</span>
+										<span class="slds-button slds-checkbox_button">
+											<input type="checkbox" id="saturday" value="saturday" name="checkbox" ng-checked="rpc.visitingHours['Sat']" ng-click="visitDaySelected('Sat',$event)" ng-disabled="readOnly"/>
+											<label class="slds-checkbox_button__label" for="saturday" ng-class="{buttonGroupDisabledWithValue: readOnly && rpc.visitingHours['Sat']}">
+												<span class="slds-checkbox_faux">Sat</span>
+											</label>
+										</span>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+						<div class="slds-form-element__help">{{fieldErrors['visitingHours']}}</div>
+					</div>
+
+					<div class="slds-form-element slds-m-vertical_large slds-p-top_small slds-col slds-size_1-of-2" ng-class="{'slds-has-error': fieldErrors['visitingStartTime']}">
+						<label class="wizard-question slds-form-element__label slds-m-bottom_small">During what hours can visits be scheduled? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+						<div class="slds-form-element__control">
+							<select class="slds-select slds-size_1-of-3" ng-model="visitingStartTime" ng-change="visitingHoursChanged()" ng-disabled="readOnly">
+								<option ng-repeat="t in visitingHourOptions" value="{{t.value}}">{{t.label}}</option>
+							</select>
+							-
+							<select class="slds-select slds-size_1-of-3" ng-model="visitingEndTime" ng-change="visitingHoursChanged()" ng-disabled="readOnly">
+								<option ng-repeat="t in visitingHourOptions" value="{{t.value}}">{{t.label}}</option>
+							</select>
+						</div>
+						<div class="slds-form-element__help">{{fieldErrors['visitingStartTime']}}</div>
+					</div>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('hours','hours')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('hours','visits')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div> 
+
+			<!-- Completed Visits -->
+			<div class="slds-vertical-tabs__content wizard" ng-show="selectedTab == 'visits'">
+				<div class="slds-text-longform slds-is-relative">
+					<div class="slds-backdrop slds-is-absolute" ng-class="{'slds-backdrop_open': showVisitObjectSpinner}">
+						<div role="status" class="slds-spinner slds-spinner_large">
+							<span class="slds-assistive-text">Loading</span>
+							<div class="slds-spinner__dot-a"></div>
+							<div class="slds-spinner__dot-b"></div>
+						</div>
+					</div>
+
+					<h3 class="slds-text-heading_medium">Completed Visits</h3>
+					<p class="step-title">These questions focus on how Route Planner knows when visits have been successfully completed.</p>
+
+					<div class="slds-box" ng-if="rpc.mapObjectName == '__none__'">
+						You must complete your Input Object Selection first.
+					</div>
+
+					<div ng-if="rpc.mapObjectName != '__none__'">
+						<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['completedChildRelationshipName']}">
+							<label class="wizard-question slds-form-element__label">What object will you use to record completed visits? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+							<div class="input-help slds-m-vertical_xx-small">The object must have a lookup field to your Map Object ({{rpc.mapObjectSobjectName}}).</div>
+							<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+								<select class="slds-select" ng-model="rpc.completedChildRelationshipName" ng-change="visitObjectChanged()" ng-disabled="readOnly">
+									<option value="__none__">Please select...</option>
+									<option value="{{namespacePrefix+'check_ins__r'}}">Geopointe Check-In</option>
+									<option ng-repeat="obj in childObjects" value="{{obj.relationshipName}}" ng-if="obj.relationshipName != namespacePrefix + 'check_ins__r'">{{obj.label}}</option>
+								</select>
+								<div class="slds-form-element__help">{{fieldErrors['completedChildRelationshipName']}}</div>
+							</div>
+						</div>
+
+						<div ng-if="rpc.completedChildRelationshipName != namespacePrefix + 'check_ins__r' && rpc.completedChildRelationshipName != '__none__'">
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['completedWhenField']}">
+								<label class="wizard-question slds-form-element__label">Where is the date of the visit saved? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+								<div class="input-help slds-m-vertical_xx-small">Select a Date or Datetime field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.completedWhenField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in visitObjectsFields" value="{{fld.name}}"
+											ng-if="((fld.type == 'DATETIME' || fld.type == 'DATE') && 
+											[namespacePrefix + 'geocode_date_time__c','lastmodifieddate','recurrenceenddateonly','recurrencestartdatetime','reminderdatetime','systemmodstamp'].indexOf(fld.name) == -1)"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['completedWhenField']}}</div>
+								</div>
+							</div>
+							<div class="slds-m-bottom_medium" ng-class="{'slds-has-error': fieldErrors['completedWhoField']}">
+								<label class="wizard-question slds-form-element__label">Where is the visitor identity saved? <abbr class="slds-required" title="required" ng-if="!readOnly">*</abbr></label>
+								<div class="input-help slds-m-vertical_xx-small">Select a User lookup field.</div>
+								<div class="slds-form-element__control slds-p-vertical_xx-small slds-align-bottom slds-col slds-size_1-of-2">
+									<select class="slds-select" ng-model="rpc.completedWhoField" ng-disabled="readOnly">
+										<option value="__none__">Please select...</option>
+										<option ng-repeat="fld in visitObjectsFields" value="{{fld.name}}"
+											ng-if="fld.referenceToObjectName == 'User' && fld.name != 'lastmodifiedbyid'"
+										>{{fld.label}}</option>
+									</select>
+									<div class="slds-form-element__help">{{fieldErrors['completedWhoField']}}</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="slds-m-bottom_medium" ng-if="rpc.completedChildRelationshipName != '__none__'">
+							<label class="wizard-question slds-form-element__label">Should only certain records be counted as completed visits?</label>
+							<div class="input-help slds-m-vertical_xx-small">Optionally add filters to limit which records are considered a completed visit.</div>
+							<div class="slds-box slds-box_small slds-m-top_small">
+								<manage-filters filters="rpc.completedFilters" filter-logic="rpc.completedFilterLogic" sobject-name="rpc.visitObjectName" read-only="readOnly"/>
+							</div>
+						</div>
+					</div>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('visits','visits')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('visits','users')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div>
+
+			<!-- Manage Users -->
+			<div class="slds-vertical-tabs__content" ng-show="selectedTab == 'users'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Manage Users</h3>
+					<p>We now need to assign users to this Route Plan Configuration.</p>
+
+					<manage-route-plan-users rpc="rpc" save-route-plan-users="saveRoutePlanUsers" />
+
+					<p class="slds-align_absolute-center slds-p-vertical_large">
+						<button ng-click="saveRPC('users','users')" class="slds-button slds-button_neutral" ng-if="rpc.status == 'PUBLISHED'">Save</button>
+						<button ng-click="saveRPC('users','analyze')" class="slds-button slds-button_neutral" ng-if="!readOnly && rpc.status != 'PUBLISHED'">Save &amp; Next</button>
+					</p>
+				</div>
+			</div>
+
+			<!-- Analyze -->
+			<div class="slds-vertical-tabs__content" ng-show="selectedTab == 'analyze'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Run Analysis</h3>
+					<p>Coming soon! This page will help you understand if the targets set are realistic given the number of locations a User needs to visit 
+						in the given timeframe.
+					</p>
+
+					<p class="slds-align_absolute-center slds-p-vertical_large" ng-if="rpc.status != 'PUBLISHED' && rpc.status != 'EXPIRED'">
+						<button class="slds-button slds-button_neutral" ng-click="setSelectedTab('deploy')">Next</button>
+					</p>
+				</div>
+			</div>
+
+			<!-- Publish -->
+			<div class="slds-vertical-tabs__content" ng-show="selectedTab == 'deploy'">
+				<div class="slds-text-longform">
+					<h3 class="slds-text-heading_medium">Publish Plan</h3>
+					<p>We made it! It is time to publish this Route Plan Configuration! Here is what will happen next. An email will be sent to all users assigned to this Route Plan Configuration letting them know a Route Plan was 
+						setup for them, but that they still need to take action. They will need to follow the links in the email and provide their start/finish addressses and their working hours.
+						Once we have this information the Routes will be automatically generated for these users.
+					</p>
+
+					<p class="slds-align_absolute-center"><img height="200px" style="height: 200px;" src="{!URLFOR($Resource.images, '/routePlanner/goingCamping.png')}"/></p>
+
+					<p class="slds-align_absolute-center"><button class="slds-button slds-button_success" ng-click="publishRPC()">Publish Plan</button></p>
+				</div>
+			</div>
+		</div>
+
+		<!-- Feature Disabled -->
+		<article class="slds-card" ng-show="!routePlannerEnabled">
+			<div class="slds-card__body slds-card__body_inner">
+				<div class="slds-illustration slds-illustration_small">
+					<p class="slds-align_absolute-center"><img height="200px" style="height: 200px;" src="{!URLFOR($Resource.images, '/routePlanner/noAccess.png')}"/></p>
+					<div class="slds-text-longform">
+						<h3 class="slds-text-heading_medium">Route Plans Not Enabled</h3>
+						<p class="slds-text-body_regular">This feature is not enabled. Please contact Geopointe support to enable Route Plans.</p>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<!-- Ajax spinner -->
+		<div class="slds-backdrop" ng-class="{'slds-backdrop_open': showSpinner}">
+			<div role="status" class="slds-spinner slds-spinner_large">
+				<span class="slds-assistive-text">Loading</span>
+				<div class="slds-spinner__dot-a"></div>
+				<div class="slds-spinner__dot-b"></div>
+			</div>
+		</div>
+
+		<!-- Visit target info modal -->
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal" ng-class="{'slds-fade-in-open': showModal}">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" ng-click="showModal = false">
+							<svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+								<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#close')}" />
+							</svg>
+							<span class="slds-assistive-text">Close</span>
+						</button>
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">The Art of the Visit Targets</h2>
+					</header>
+					<div class="slds-modal__content slds-p-around_medium slds-text-longform" id="modal-content-id-1">
+						<p>Why does it matter whether the target is "1 visit per week" or "4 visits per 4 weeks"?  The 3 main reasons it matters are:</p>
+						<ul class="slds-list_dotted">
+							<li>Each period starts as a clean slate</li>
+							<li>Your routes are more efficient with a little flexibility</li>
+							<li>A larger period gives you more flexibilty in different visit frequencies</li>
+						</ul>
+
+						<p><b>Each period starts as a clean slate.</b> This means that when a new period starts, Route Planner does not take into consideration the visit success rates of the prior period.  Let's say you don't have enough time to visit all of your records in the period.  Route Planner will try to fit in as many as possible by making the most efficient routes.  It visits records A, B, C, and D.  But it does not get to records E and F.  When it starts a new period, it doesn't prioritize E and F because it missed them last period.  So, it's likely the next period will go to the same records as before (because that lets you visit the most records), and miss the same records again.  In 4 weeks, you could end up visiting A, B, C, and D 4 times each, and never go to E and F.</p><p>On the other hand, if the target is "4 visits in 4 weeks," if you only hit A, B, C, and D the first week, then E and F will be prioritized for the next week.  So, in 4 weeks, you could end up visiting A, B and C 3 times each; and D, E, and F twice each.  Neither approach is always better, but, most people will prefer visits to be distributed across all records.</p>
+
+						<p><b>Your routes are more efficient with a little flexibility.</b> Route Planner always spaces out visits fairly evenly.  So, "3 visits every 6 weeks" will produce visits that are about 2 weeks apart.  But, "3 visits every 6 weeks" provides more scheduling flexibility than "1 visit every 2 weeks," and as a result, your routes can be scheduled more efficiently. This can result in fitting in a greater number of visits overall.</p>
+
+						<p><b>A larger period gives you more flexibilty in different visit frequencies.</b> If your default visiting frequency is "1 visit every 2 weeks," you cannot override a record to be visited less frequently.  On the other hand, if your default visiting frequency is defined as "2 visits every 4 weeks," you can specify some records to get visited half as many times.  Set their target number of visits to "1," and then those records will get visited 1 time every 4 weeks.  Further, if your default visiting frequency is "3 visits every 6 weeks," you have even more options for less frequent visits: 1 visit every 6 weeks, and 2 visits every 6 weeks.</p>
+
+						<p>Why not just make the period huge then?  We recommend keeping the period to 3 months or less.  This is because when Route Planner runs, it schedules out 3 months.  It returns metrics about how well it was able to hit the targets.  Those metrics are summarized by period and are most meaningful when it has been able to finish a period.  If your period is 3 months or less, from your very first optimiziation, you'll be able to see a full period's results.  If your period is longer than 3 months, you'll have to wait to see how close you'll be to your targets until you're partially through your period.</p>
+
+						<p>Play around with your target frequency to find your sweet spot.</p>
+					</div>
+					<footer class="slds-modal__footer">
+						<button class="slds-button slds-button_neutral" ng-click="showModal = false">Close</button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop" ng-class="{'slds-backdrop_open': showModal}"></div>
+		</div>
+	</div>
+
+</apex:page>
