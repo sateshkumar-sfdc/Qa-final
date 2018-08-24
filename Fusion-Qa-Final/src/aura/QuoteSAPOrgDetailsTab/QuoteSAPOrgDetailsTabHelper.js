@@ -106,6 +106,7 @@
                     this.evaluateDependents(component,controllingData,dependant,dependantlist);
                     component.set("v.divisionList", dependantlist);
                     component.set("v.divString",dependantlist[0].FieldValue__c);
+                       // controllingDivisionData = dependantlist[0].FieldValue__c;
                     component.find("divisionId").set("v.disabled", false);
                     console.log('plant info1-->'+dependantlist);
                     console.log('3');
@@ -114,14 +115,29 @@
                     dependant = 'SALES_OFFICE';
                     console.log('5'+dependantlist);
                     controllingData = controllingSalesOrgData +'-'+controllingDistChanData+'-'+controllingDivisionData;
+                        console.log('5 controllingData---'+controllingData);
                     this.evaluateDependents(component,controllingData,dependant,dependantlist);
                     console.log('6');
                     component.set("v.salesOffList", dependantlist);
+                        console.log('6.1'+'--'+dependantlist);
+                    component.set("v.salesofficeString","STD");
+                        console.log('6.1.2');
                     console.log(dependantlist);
                    // component.set("v.salesofficeString",dependantlist[0].FieldValue__c);
                     console.log('8');
                     component.find("salesofficeId").set("v.disabled", false);
-                        console.log('plant info-->'+dependantlist);}
+                        console.log('plant info-->'+dependantlist);
+                    dependantlist = [];
+                    console.log('4');
+                    dependant = 'SALES_GROUP';
+                        controllingData = 'STD';
+                        this.evaluateDependents(component,controllingData,dependant,dependantlist);
+                    console.log('6');
+                    component.set("v.salesgrpList", dependantlist);
+                        console.log('6.1'+'--'+dependantlist);
+                    component.set("v.salesgroupString","STD");
+                        component.find("salesgroupId").set("v.disabled", false);
+                    }
                     else{
                         component.find("divisionId").set("v.disabled", true);
             			component.find("salesofficeId").set("v.disabled", true);
@@ -221,10 +237,13 @@
                     console.log('6');
                     component.set("v.salesOffList", dependantlist);
                     console.log(dependantlist);
-                   // component.set("v.salesofficeString",dependantlist[0].FieldValue__c);
+                    component.set("v.salesofficeString","STD");
                     console.log('8');
                     component.find("salesofficeId").set("v.disabled", false);
-                        console.log('plant info-->'+dependantlist);}
+                        console.log('plant info-->'+dependantlist);
+                    
+                    
+                    }
                     else{
                         component.find("divisionId").set("v.disabled", true);
             			component.find("salesofficeId").set("v.disabled", true);
@@ -267,17 +286,19 @@
         for(var name in AccountSequenceDataValues)
         {
          	var AccDataValueString = AccountSequenceDataValues[name];   
-            console.log('-->'+AccDataValueString);
+            console.log('-->'+AccDataValueString.includes(controllingData));
             if(AccDataValueString.includes(controllingData))
-            {
-                
+            {   
                 var value = AccDataValueString.split('-')[Position];
+                console.log('string test'+JSONString.seedDataKeyFieldValuesMap_wrapper[dependant+value]);
+                if(JSONString.seedDataKeyFieldValuesMap_wrapper[dependant+value] != undefined)
                 dependantlist.push(JSONString.seedDataKeyFieldValuesMap_wrapper[dependant+value]);
                 
             }
            
         }
-         console.log('Function value deplist-->'+dependantlist);
+         console.log('Function value deplist-->');
+        console.log(dependantlist);
             return dependantlist;
     },
      enableDisableDependancies : function(component,editRecId){

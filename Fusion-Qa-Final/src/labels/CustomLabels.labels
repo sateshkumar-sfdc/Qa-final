@@ -58,6 +58,13 @@
         <value>Back</value>
     </labels>
     <labels>
+        <fullName>BizDev_Record_Type</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>BizDev Record Type</shortDescription>
+        <value>0124D0000004ZSUQA2</value>
+    </labels>
+    <labels>
         <fullName>CITY</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -212,6 +219,13 @@
         <value>10</value>
     </labels>
     <labels>
+        <fullName>Default_Lead_RecordType</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Default Lead RecordType</shortDescription>
+        <value>0124D0000004ZSVQA2</value>
+    </labels>
+    <labels>
         <fullName>Default_SalesOffice_SalesOrg</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -343,6 +357,13 @@
         <protected>false</protected>
         <shortDescription>Front</shortDescription>
         <value>Front</value>
+    </labels>
+    <labels>
+        <fullName>Fundraising_RecordType</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Fundraising RecordType</shortDescription>
+        <value>0124D0000004ZSWQA2</value>
     </labels>
     <labels>
         <fullName>HEAD_COOK_S_NAME</fullName>
@@ -525,6 +546,20 @@
         <protected>false</protected>
         <shortDescription>* Order minimums apply</shortDescription>
         <value>* Order minimums apply</value>
+    </labels>
+    <labels>
+        <fullName>OutSideSales</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>OutSideSales</shortDescription>
+        <value>0124D0000004ZSYQA2</value>
+    </labels>
+    <labels>
+        <fullName>Outfitters_RecordType</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Outfitters-RecordType</shortDescription>
+        <value>0124D0000004ZSXQA2</value>
     </labels>
     <labels>
         <fullName>PHONE</fullName>

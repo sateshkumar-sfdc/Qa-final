@@ -941,6 +941,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>SoldToShipToResponse</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TSTC_AcceptAction</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -9657,15 +9661,23 @@
         <layout>JobTracker-Job Tracker Layout - Winter %2716</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Lead-BizDev</layout>
+        <recordType>Lead.BizDev</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Lead-Business Development</layout>
         <recordType>Lead.Business_Development</recordType>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Lead-Lead Layout</layout>
+        <layout>Lead-Default Lead Layout</layout>
+        <recordType>Lead.Default_Lead_Layout</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Lead-Fundraising Layout</layout>
+        <recordType>Lead.Fundraising</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Lead-Lead Layout</layout>
-        <recordType>Lead.BizDev</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Lead-Lead Layout</layout>
@@ -9676,20 +9688,12 @@
         <recordType>Lead.Dealer_Canada</recordType>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Lead-Lead Layout</layout>
-        <recordType>Lead.Default_Lead_Layout</recordType>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Lead-Lead Layout</layout>
-        <recordType>Lead.Fundraising</recordType>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Lead-Lead Layout</layout>
-        <recordType>Lead.Outside_Sales</recordType>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>Lead-Outfitters</layout>
         <recordType>Lead.Outfitters</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Lead-Outside Sales Layout</layout>
+        <recordType>Lead.Outside_Sales</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Lead_Assignment_Rule__c-By State</layout>
@@ -10563,6 +10567,10 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>MyProfilePage</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>Payment_Test</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>

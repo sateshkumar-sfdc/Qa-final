@@ -7,5 +7,11 @@ public class QuoteTabController {
       //return quoteObj.Quote_Items__r;
       return lineitems;
     }
+    
+      @AuraEnabled
+    Public static string changeQuoteStatus(Id QuoteId){
+        String message = QuoteCommonUtil.expireQuote(QuoteId);
+        return message;
+    }
 
 }

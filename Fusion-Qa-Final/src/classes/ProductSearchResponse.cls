@@ -21,7 +21,7 @@ public class ProductSearchResponse {
 	public class Item_Z {
 		public String ITM_NUMBER;
 		public Integer PLANT;
-		public Integer STGE_LOC;
+		public String STGE_LOC;
 		public Long MATERIAL;
 		public String SHORT_TEXT;
 		public String QTY_AVAILABLE;

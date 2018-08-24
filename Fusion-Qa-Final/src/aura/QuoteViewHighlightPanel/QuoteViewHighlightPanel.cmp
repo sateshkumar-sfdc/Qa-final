@@ -51,7 +51,7 @@ Date         Version          Author             Summary of Changes
                             </div> 
                             <div>    
                              <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="Customer Name">
-                                Customer Name
+                                {!v.simpleRecord.Account__r.Name}
                             </h1>
                                 
                                 </div><br/>

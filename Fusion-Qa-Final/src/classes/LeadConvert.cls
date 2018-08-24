@@ -1,3 +1,20 @@
+/*
+*************************************************************
+** Name: LeadConvert.apxc                        	       **
+** Copyright notice: 									   **
+** YETI Coolers										       **
+*************************************************************
+** Purpose:                  							   **
+** Lead Convert to Account, Contacts and Opportunity       **
+*************************************************************
+** History:                                                **
+************************************************************* 
+** VERSION AUTHOR DATE DETAIL RELEASE/CSR                  **
+** 1.0 - Satesh Makineni 08/17/2018 INITIAL DEVELOPMENT    **
+** 2.0 -                                                   **
+*************************************************************
+*/
+
 public class LeadConvert {
     @AuraEnabled
     public static List<Account> checkAccount(ID recId){

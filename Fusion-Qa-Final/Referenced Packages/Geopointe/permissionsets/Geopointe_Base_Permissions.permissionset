@@ -22,7 +22,7 @@
     </classAccesses>
     <classAccesses>
         <apexClass>ActionPardotEngage_Controller</apexClass>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>ActionPardotEngage_Controller_Test</apexClass>
@@ -3712,7 +3712,7 @@
     </objectPermissions>
     <pageAccesses>
         <apexPage>ActionPardotEngage</apexPage>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
         <apexPage>AddToCampaign</apexPage>

@@ -1,3 +1,20 @@
+/*
+*************************************************************
+** Name: SoldToShipTo.apxc                        	       **
+** Copyright notice: 									   **
+** YETI Coolers										       **
+*************************************************************
+** Purpose:                  							   **
+** Sold To ShipTo structure from Json                     **
+*************************************************************
+** History:                                                **
+************************************************************* 
+** VERSION AUTHOR DATE DETAIL RELEASE/CSR                  **
+** 1.0 - Satesh Makineni 08/17/2018 INITIAL DEVELOPMENT    **
+** 2.0 -                                                   **
+*************************************************************
+*/
+
 public class SoldToShipTo {
     
     

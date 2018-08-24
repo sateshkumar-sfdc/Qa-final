@@ -499,6 +499,10 @@ function gp_defineDataTableRow(thisPOIC, thisPOI){
 					//Use moment.js to format the date
 					label = dataValue ? momentDate.tz(gp_userSettings.userInfo.timeZone).format('l') + ' ' + momentDate.tz(gp_userSettings.userInfo.timeZone).format('LT') : '';
 					tableRow.push({label: label, value: dataValue});
+				
+				}else if(typeValue === 'CURRENCY' || typeValue === 'DOUBLE' ||  typeValue === 'INTEGER'){
+					tableRow.push(dataValue);
+					
 				}else{
 					tableRow.push(gp_escapeHtml(dataValue));
 				}
@@ -686,13 +690,38 @@ function gp_formatOutputField(opts){
 			var sReturn = '';
 
 			if(opts.isCalculated){//Formula fields
-				var val = opts.fieldValue;
+				var val = opts.fieldValue ? opts.fieldValue : '';
 				if(opts.inDataTable){
 					val = jQuery('<span>').html(opts.fieldValue).text();
 				}
 
-				//If there are bracket but not anchor tags need to escape
-				if(val.indexOf('<') > -1 && val.indexOf('<a') == -1){ //Mixed text and URL
+				var xssMatches = ['<script>','javascript','ipt:','FSCommand','onAbort','onActivate','onAfterPrint','onAfterUpdate','onBeforeActivate','onBeforeCopy','onBeforeCut','onBeforeDeactivate',
+									'onBeforeEditFocus','onBeforePaste','onBeforePrint','onBeforeUnload','onBeforeUpdate','onBegin','onBlur','onBounce','onCellChange',
+									'onChange','onClick','onContextMenu','onControlSelect','onCopy','onCut','onDataAvailable','onDataSetChanged','onDataSetComplete',
+									'onDblClick','onDeactivate','onDrag','onDragEnd','onDragLeave','onDragEnter','onDragOver','onDragDrop','onDragStart','onDrop',
+									'onEnd','onError','onErrorUpdate','onFilterChange','onFinish','onFocus','onFocusIn','onFocusOut','onHashChange','onHelp','onInput',
+									'onKeyDown','onKeyPress','onKeyUp','onLayoutComplete','onLoad','onLoseCapture','onMediaComplete',
+									'onMediaError','onMessage','onMouseDown','onMouseEnter','onMouseLeave','onMouseMove','onMouseOut','onMouseOver','onMouseUp','onMouseWheel',
+									'onMove','onMoveEnd','onMoveStart','onOffline','onOnline','onOutOfSync','onPaste','onPause','onPopState','onProgress','onPropertyChange',
+									'onReadyStateChange','onRedo','onRepeat','onReset','onResize','onResizeEnd','onResizeStart','onResume','onReverse','onRowsEnter','onRowExit',
+									'onRowDelete','onRowInserted','onScroll','onSeek','onSelect','onSelectionChange','onSelectStart','onStart','onStop','onStorage','onSyncRestored',
+									'onSubmit','onTimeError','onTrackChange','onUndo','onUnload','onURLFlip','seekSegmentTime'];
+
+				//If &lt; //Salesforce already escaped, do nothing.
+				if(val.indexOf('&lt;') > -1){
+					//Salesforce already escaped, do nothing.
+
+				}else if(val.indexOf('<a') > -1 || val.indexOf('<img') > -1){ //There are <a or <img tags. Allow, but look for malicious scripts and escape
+
+					//Check for potential script matches
+					for(var i = 0; i < xssMatches.length; i++){
+						if(val.toLowerCase().indexOf(xssMatches[i].toLowerCase()) > -1){
+							val = gp_escapeHtml(val);
+							break;
+						}
+					}
+
+				}else{ //escape it all others
 					val = gp_escapeHtml(val);
 				}
 
@@ -720,20 +749,32 @@ function gp_formatOutputField(opts){
 //Returns formatted value for the Geocode Quality column
 //Is Passed in "obj" from the fnRender function at http://www.datatables.net/usage/columns
 function gp_renderGeocodeQuality(obj){
-	var theValue = obj.aData[ obj.iDataColumn ];
-	return gp_renderGeocodeQualityFromValue(theValue);
+	var theValue = obj.aData[ obj.iDataColumn ] || 'CUSTOM';
+
+	var poorGCImage = '<img src="' + gpImg.error12 + '" alt="Poor Geocode Quality" />';
+	var medGCImage =  '<img src="' + gpImg.warning12 + '" alt="Medium Geocode Quality" />';
+	var goodGCImage = '<img src="' + gpImg.confirm12 + '" alt="High Geocode Quality" />';
+
+	var qual = gp_getGeocodeQualityCategory(theValue);
+
+	return (qual=='high' ? goodGCImage : qual=='medium' ? medGCImage : poorGCImage) + " " + theValue;
 }
-function gp_renderGeocodeQualityFromValue(theValue){
-	if (theValue == ''){ theValue = 'CUSTOM' };
-	var preImage = '';
-	if (theValue == 'POINT' || theValue == 'ADDRESS' || theValue == 'STREET' || theValue == 'INTERSECTION' || theValue == 'ROOFTOP' || theValue == 'CUSTOM'){
-		preImage = "<img src=\"" + gpImg.confirm12 + "\"  title=\"Good Geocode Quality!\" />";
-	} else if (theValue == 'CITY' || theValue == 'ZIP' || theValue == 'ZIP_EXTENDED' || theValue == 'RANGE_INTERPOLATED'){
-		preImage = "<img src=\"" + gpImg.warning12 + "\"  title=\"Average Geocode Quality!\"  />";
-	} else if (theValue == 'COUNTY' || theValue == 'STATE' || theValue == 'COUNTRY' || theValue == 'GEOMETRIC_CENTER' || theValue == 'APPROXIMATE'){
-		preImage = "<img src=\"" + gpImg.error12 + "\"  title=\"Poor Geocode Quality!\"  />";
-	}
-	return preImage + " " + theValue;
+
+// Should match the definitions in MapObject
+function gp_getGeocodeQualityCategory(quality) {
+	if (!quality) return '';
+	
+	var q = quality.toLowerCase();
+	if (['rooftop', 'custom', 'address'].indexOf(q) > -1)
+		return 'high';
+
+	if (['range_interpolated', 'nearaddress', 'block', 'street'].indexOf(q) > -1)
+		return 'medium';
+
+	if (['geometric_center', 'approximate', 'extendedzip', 'zip', 'neighborhood', 'city', 'county', 'state', 'unknown'].indexOf(q) > -1)
+		return 'low';
+
+	return '';
 }
 
 // Remove Marker from a Table
@@ -1610,44 +1651,36 @@ function gp_removeRouteTab(){
 }
 
 // Add to Route from the Data Table
-function gp_addToRouteFromDataTable(markerId, tableId){
+function gp_addToRouteFromDataTable(markerId, dataSetSearchId){
 	
-	// Find the data table row
-	var aoData = jQuery('#' + tableId).dataTable().fnGetData();
-	var gp_ColumnInfo = jQuery('#' + tableId).data('columnInfo');
-	var thisRow;
-	for(var i = 0, iLen = aoData.length; i < iLen; i++) {
-		if (aoData[i][gp_ColumnInfo.uniqueId] == markerId){
-			thisRow = aoData[i];
-			break;
-		}
-	}
+	var marker = gp_markers[markerId];
+	var qo = gp_dataSetSearches[marker.collectionName].qo;
 
 	var routeStop = {
 		id: guid(),
 		source: 'sfdc',
-		sourceId: thisRow[gp_ColumnInfo.recordId],
+		sourceId: marker.sObject.id,
 		name: '', //set below
-		street: thisRow[gp_ColumnInfo.street],
-		city: thisRow[gp_ColumnInfo.city],
-		state: thisRow[gp_ColumnInfo.state],
-		postalCode: thisRow[gp_ColumnInfo.postalCode],
-		country: thisRow[gp_ColumnInfo.country],
-		countryISO: thisRow[gp_ColumnInfo.countryISO],
-		lat: thisRow[gp_ColumnInfo.latitude],
-		lng: thisRow[gp_ColumnInfo.longitude],
-		geocodeQuality: thisRow[gp_ColumnInfo.geocodeQuality],
+		street: getDescendantProp(marker.sObject, qo.moNew.ReadStreetField),
+		city: getDescendantProp(marker.sObject, qo.moNew.ReadCityField),
+		state: getDescendantProp(marker.sObject, qo.moNew.ReadStateField),
+		postalCode: getDescendantProp(marker.sObject, qo.moNew.ReadPostalField),
+		country: getDescendantProp(marker.sObject, qo.moNew.ReadCountryField),
+		countryISO: getDescendantProp(marker.sObject, qo.moNew.GpCountryIsoField),
+		lat: getDescendantProp(marker.sObject, qo.moNew.GpLatitudeField),
+		lng: getDescendantProp(marker.sObject, qo.moNew.GpLongitudeField),
+		geocodeQuality: getDescendantProp(marker.sObject, qo.moNew.GeocodeQualityField),  
 	    typeOfRecord: 'routeStop',
-	    sfdcId: thisRow[gp_ColumnInfo.recordId],
-	    recordTypeId: thisRow[gp_ColumnInfo.recordTypeId],
-	    mapObjectName: gp_dataSetSearches[tableId].qo.moNew.Name,
-	    mapObjectSobjectName: (typeof(gp_objNameByKeyPref) != "undefined" && typeof(gp_objNameByKeyPref[thisRow[gp_ColumnInfo.recordId].substring(0,3)]) != "undefined") ? gp_objNameByKeyPref[thisRow[gp_ColumnInfo.recordId].substring(0,3)].toLowerCase() : '', 
+	    sfdcId: marker.sObject.id,
+	    recordTypeId: marker.recordTypeId,
+	    mapObjectName: qo.moNew.Name,
+	    mapObjectSobjectName: qo.moNew.SobjectName, 
 	}
 
 	//Populate list of fields
 	try{
 		routeStop.fieldNames = [];
-		var qoFields = gp_dataSetSearches[gp_markers[markerId].collectionName].qo.dataSetFields;
+		var qoFields = qo.dataSetFields;
 		qoFields.forEach(function(field){
 			routeStop.fieldNames.push(field.field);
 		});
@@ -1656,11 +1689,11 @@ function gp_addToRouteFromDataTable(markerId, tableId){
 	}
 
 	//Set name value on the routeStop
-	if (thisRow[gp_ColumnInfo.title2] == ''){
-		routeStop.name = gp_htmlDecode(thisRow[gp_ColumnInfo.title]);
+	if (!marker.gp_title2){
+		routeStop.name = marker.gp_title;
 
 	} else {
-		routeStop.name = gp_htmlDecode(thisRow[gp_ColumnInfo.title]) + ' | ' + gp_htmlDecode(thisRow[gp_ColumnInfo.title2]);
+		routeStop.name = marker.gp_title + ' | ' + marker.gp_title2;
 	}
 
 	//Add an item to the route in our angular routecontroller

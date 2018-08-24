@@ -3,6 +3,8 @@
     <customButtons>LNK_Account_OrderList</customButtons>
     <customButtons>LNK_Account_CreateOrder</customButtons>
     <customButtons>LNK_Account_CustomerDetail</customButtons>
+    <excludeButtons>DataDotComClean</excludeButtons>
+    <excludeButtons>DataDotComCompanyHierarchy</excludeButtons>
     <excludeButtons>IncludeOffline</excludeButtons>
     <excludeButtons>RequestUpdate</excludeButtons>
     <excludeButtons>SendEmail</excludeButtons>

@@ -18,6 +18,16 @@ Public with sharing class CreateQuoteController {
         public Id opportunityId;
         public Integer itemnumbertocature;
     }
+    
+    public class saporgDetails{
+     public String salesOrg;
+	public String distribution;
+	public String division;
+	public String companycode;
+	public String salesoffice;
+	public String salesgrp;
+
+    }
 
 
   /* This Class to send Responce to Lightning component */
@@ -118,11 +128,12 @@ Public with sharing class CreateQuoteController {
 /* This method called In Quote Screen to Commits the Data to Database */    
     
     @AuraEnabled
-    public static ResponseObject saveandupdateQuote(String QuoteDetails, String newList,  String QuoteId, String Status) {
+    public static ResponseObject saveandupdateQuote(String QuoteDetails, String newList,  String QuoteId, String Status, string sapdetails) {
         system.debug(newList);
         system.debug(QuoteDetails);
         system.debug(QuoteId);
-         
+        system.debug(sapdetails);
+         string usrCountry;
         string results;
         List < Quote_Item_Level__c > newobjlist = new List < Quote_Item_Level__c > ();
         List < Quote_Item_Level__c > updateobjlist = new List < Quote_Item_Level__c > ();
@@ -130,14 +141,14 @@ Public with sharing class CreateQuoteController {
         ResponseObject resobj = new ResponseObject();
         
         QuoteHeaderWrapper quotedetailswrapper = (QuoteHeaderWrapper) JSON.deserialize(QuoteDetails, QuoteHeaderWrapper.class);
-
+        saporgDetails saporgDetailswrapper = (saporgDetails) JSON.deserialize(sapdetails, saporgDetails.class);
         String s1 = newList.replace('UPK__c', 'UPK');
         String s2 = s1.replace('ProductLocation__c', 'ProductLocation');
         String s3 = s2.replace('category__c', 'category');
          String s4 = s3.replace('MaterialID__c', 'MaterialID');
         system.debug(s3);
         List < LineItems > newItemsWrapper;
-       
+       system.debug(saporgDetailswrapper);
         if (!s2.equals('null')) {
            // system.debug(!s2.equals('null'));
             newItemsWrapper = (List < LineItems > ) System.JSON.deserialize(s4, List < LineItems > .class);
@@ -156,11 +167,48 @@ Public with sharing class CreateQuoteController {
             QutObj.ItemNumberToCapture__c = quotedetailswrapper.itemnumbertocature;
             if (!String.isEmpty(Status))   QutObj.Status__c = Status;
              else   QutObj.Status__c = 'New'; 
+            if(!String.isEmpty(saporgDetailswrapper.salesOrg)){
+               QutObj.Sales_Organization__c =saporgDetailswrapper.salesOrg;
+QutObj.Sales_Office__c=saporgDetailswrapper.salesoffice;
+QutObj.Sales_Group__c=saporgDetailswrapper.salesgrp;
+QutObj.Company_Code__c=saporgDetailswrapper.companycode;
+QutObj.Division__c=saporgDetailswrapper.division;
+QutObj.Distribution_Channel__c=saporgDetailswrapper.distribution;
+
+            }else{
+                usrCountry = [Select country From User Where Id = :UserInfo.getUserId()][0].country;
+               system.debug('-->ctry'+usrCountry);
+               if(usrCountry == null || usrCountry == '')
+               {
+                   usrCountry = 'US';
+               }
+               if(usrCountry == 'US')
+                   usrCountry = usrCountry+'-'+System.Label.Default_Us_Sales_Org;
+               
+
+              
+
+               QutObj.Sales_Organization__c = Country_SalesOrg_CompanyCode__c.getInstance(usrCountry).Sales_Org__C;
+               QutObj.Company_Code__c = SalesOrg_CompanyCode__c.getInstance(Country_SalesOrg_CompanyCode__c.getInstance(usrCountry).Sales_Org__C).Company_Code__c;
+               QutObj.Division__c = System.Label.Default_Distribution_Division;
+
+QutObj.Distribution_Channel__c= System.Label.Default_Distribution_Division;
+
+QutObj.Sales_Group__c=System.Label.Default_SalesOffice_SalesOrg;
+QutObj.Sales_Office__c=System.Label.Default_SalesOffice_SalesOrg;
+
+
+               
+               
+                      }
+                
+            
+             update QutObj;
+            resobj.quoteId = QutObj.Id;
+           
+           
             
            
-            update QutObj;
-            
-            resobj.quoteId = QutObj.Id;
 
 
             if (!s2.equals('null') && !newItemsWrapper.equals('null')) {
@@ -183,6 +231,40 @@ Public with sharing class CreateQuoteController {
             QutObject.Do_Not_Ship_Before__c = quotedetailswrapper.DoNotShipBefore;
             QutObject.ItemNumberToCapture__c = quotedetailswrapper.itemnumbertocature;
             QutObject.Status__c = 'New';
+            if(!String.isEmpty(saporgDetailswrapper.salesOrg)){
+               QutObject.Sales_Organization__c =saporgDetailswrapper.salesOrg;
+QutObject.Sales_Office__c=saporgDetailswrapper.salesoffice;
+QutObject.Sales_Group__c=saporgDetailswrapper.salesgrp;
+QutObject.Company_Code__c=saporgDetailswrapper.companycode;
+QutObject.Division__c=saporgDetailswrapper.division;
+QutObject.Distribution_Channel__c=saporgDetailswrapper.distribution;
+
+            }else{
+                usrCountry = [Select country From User Where Id = :UserInfo.getUserId()][0].country;
+               system.debug('-->ctry'+usrCountry);
+               if(usrCountry == null || usrCountry == '')
+               {
+                   usrCountry = 'US';
+               }
+               if(usrCountry == 'US')
+                   usrCountry = usrCountry+'-'+System.Label.Default_Us_Sales_Org;
+               
+
+              
+
+               QutObject.Sales_Organization__c = Country_SalesOrg_CompanyCode__c.getInstance(usrCountry).Sales_Org__C;
+               QutObject.Company_Code__c = SalesOrg_CompanyCode__c.getInstance(Country_SalesOrg_CompanyCode__c.getInstance(usrCountry).Sales_Org__C).Company_Code__c;
+               QutObject.Division__c = System.Label.Default_Distribution_Division;
+
+QutObject.Distribution_Channel__c= System.Label.Default_Distribution_Division;
+
+QutObject.Sales_Group__c=System.Label.Default_SalesOffice_SalesOrg;
+QutObject.Sales_Office__c=System.Label.Default_SalesOffice_SalesOrg;
+
+
+               
+               
+                      }
             insert QutObject;
 
             resobj.quoteId = QutObject.Id;
@@ -342,16 +424,16 @@ for (LineItems lineObj : lineList) {
         Quote_Header__c headerObj;
         EditResponce editObj = new EditResponce();
         system.debug(!Schema.sObjectType.Quote_Header__c.fields.ExpireQuote__c.isAccessible());
-        if(Schema.sObjectType.Quote_Header__c.fields.ExpireQuote__c.isAccessible()){
+        if(Schema.sObjectType.Quote_Header__c.fields.Expires__c.isAccessible()){
           
-            headerObj = [select Id, Account__c,Account__r.Name,In_Hands_Date__c,ExpireQuote__c,ItemNumberToCapture__c,Opportunity__c,Status__c,Do_Not_Ship_Before__c,(select Id,Name,Product_Description__c,ProductUrl__c From Quote_Items__r )From Quote_Header__c where 
+            headerObj = [select Id, Account__c,Account__r.Name,In_Hands_Date__c,Expires__c,ItemNumberToCapture__c,Opportunity__c,Status__c,Do_Not_Ship_Before__c,(select Id,Name,Product_Description__c,ProductUrl__c From Quote_Items__r )From Quote_Header__c where 
                                     Id = : recId ];
             Access = false;
            editObj.QuoteObj = headerObj;
            editObj.Accessble = Access;
         }
         else{
-             headerObj = [select Id, Account__c,In_Hands_Date__c,Account__r.Name,ExpireQuote__c,Opportunity__c,ItemNumberToCapture__c,Status__c,Do_Not_Ship_Before__c,(select Id,Name,Product_Description__c,ProductUrl__c From Quote_Items__r )From Quote_Header__c where 
+             headerObj = [select Id, Account__c,In_Hands_Date__c,Account__r.Name,Expires__c,Opportunity__c,ItemNumberToCapture__c,Status__c,Do_Not_Ship_Before__c,(select Id,Name,Product_Description__c,ProductUrl__c From Quote_Items__r )From Quote_Header__c where 
                                     Id = : recId ]; 
              Access = True;
            editObj.QuoteObj = headerObj;
@@ -382,6 +464,7 @@ for (LineItems lineObj : lineList) {
              lineobj.measure  = quoteItem.Measure__c; 
              lineobj.Discountmeasure = quoteItem.Discountmeasure__c;
              lineobj.Discount = quoteItem.Discount_Item__c;
+             lineobj.UPK = quoteItem.UPK__c;
            List<Jsondata> jsondatalist = new List<Jsondata>(); 
            for( Artwork__c artobj : quoteItem.Artworks__r){
                Jsondata jsnobj = new Jsondata();

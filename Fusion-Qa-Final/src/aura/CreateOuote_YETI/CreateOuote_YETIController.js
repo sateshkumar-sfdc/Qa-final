@@ -17,13 +17,18 @@
             console.log(component.get("v.OppId"));
             component.set("v.quoteID",results.QuoteObj.Id);
              console.log(component.get("v.quoteID"));
-            if(results.QuoteObj.ItemNumberToCapture__c != null ){
+            if(results.QuoteObj.ItemNumberToCapture__c != null || results.QuoteObj.ItemNumberToCapture__c != undefined ){
                 console.log("-->"+results.QuoteObj.ItemNumberToCapture__c);
              component.set("v.itemnumber",results.QuoteObj.ItemNumberToCapture__c);   
+            }else{
+                let itmnum = 0;
+                 component.set("v.itemnumber",itmnum);
+                console.log(component.get("v.itemnumber"));
             }
             
+            
             component.set("v.Access", results.Accessble);
-            console.log(component.get("v.Access"));
+            //console.log(component.get("v.Access"));
             var lineitemList = JSON.parse(results.lineList);
             if(lineitemList.length > 0 ){
                 
@@ -51,46 +56,46 @@
 
 
             window.addEventListener("message", function(event) {
-                console.log(event.data);
+              //  console.log(event.data);
                 var jsndata = event.data
                 if (jsndata.includes("isEdit")) {
-                    console.log("testforow" + event.data);
+                 //   console.log("testforow" + event.data);
                     var edata = JSON.parse(jsndata);
-                    console.log(edata);
+                  //  console.log(edata);
                     var itno = component.get("v.CitemNumber");
-                    console.log(itno);
+                   // console.log(itno);
                     var side = component.get("v.side");
-                    console.log(side);
+                   // console.log(side);
 
                     var evdata = edata.editdata;
-                    console.log(evdata);
+                   // console.log(evdata);
 
                     var v = evdata.toString();
                     var m = v.replace(' "{ ', "{");
                     var o = m.replace('"{', '{');
                     var n = o.replace(/\\/g, "");
 
-                    console.log("n");
-                    console.log(n);
+                   // console.log("n");
+                   // console.log(n);
 
                     var jsn = "[" + n + "]"
 
-                    var custmizerList = [];
-                    custmizerList = JSON.parse(jsn);
-                    console.log(custmizerList);
+                   
+                    var custmizerList = JSON.parse(jsn);
+                   // console.log(custmizerList);
                     var cusList = component.get("v.Customlist");
-                    console.log(component.get("v.Customlist"));
+                   // console.log(component.get("v.Customlist"));
                     for (var i = 0; i < cusList.length; i++) {
                         if (cusList[i].itemnumber == itno) {
                             for (var j = 0; j < cusList[i].jsondata.length; j++) {
                                 // cusList[i].jsondata = custmizerList;
-                                console.log(cusList[i].jsondata[j].ramsideloc);
+                               // console.log(cusList[i].jsondata[j].ramsideloc);
                                 if (cusList[i].jsondata[j].ramsideloc != side) {
                                     //cusList[i].jsondata.splice(j, 1);
                                     custmizerList.push(cusList[i].jsondata[j]);
-                                    console.log("real logic");
-                                    console.log(cusList[i].jsondata[j]);
-                                    console.log(custmizerList);
+                                 
+                                   // console.log(cusList[i].jsondata[j]);
+                                   // console.log(custmizerList);
                                 }
 
                                 // }else{
@@ -101,29 +106,30 @@
                         }
                         // cusList[i].jsondata = custmizerList;
                     }
-                    console.log(custmizerList);
+                    //console.log(custmizerList);
                     component.set("v.Customlist", cusList);
-                    console.log(component.get("v.Customlist"));
+                   // console.log(component.get("v.Customlist"));
                     // component.set("v.CitemNumber",null); 
 
                 } else {
-                    console.log(component.get("v.Coolerslist"));
-                    console.log(component.get("v.Customlist"));
-                    console.log(component.get("v.customProductId"));
+                   // console.log(component.get("v.Coolerslist"));
+                   // console.log(component.get("v.Customlist"));
+                  //  console.log(component.get("v.customProductId"));
                     var v = event.data.toString();
                     var m = v.replace(' "{ ', "{");
                     var o = m.replace('"{', '{');
                     var n = o.replace(/\\/g, "");
                     var jsn = "[" + n + "]"
-                    let custmizerList = [];
-                    custmizerList = JSON.parse(jsn);
-                    console.log(custmizerList);
+                    
+                    var custmizerList = JSON.parse(jsn);
+                   // console.log(custmizerList);
                     var cusList = component.get("v.Customlist");
                     var StockList = component.get("v.Coolerslist");
-                    console.log(cusList);
-                    console.log(StockList);
-                    for (var i = 0; i < StockList.length; i++) {
-                        console.log(StockList[i]);
+                   // console.log(cusList);
+                   // console.log(StockList);
+                    if(StockList.length > 0){
+                       for (var i = 0; i < StockList.length; i++) {
+                       // console.log(StockList[i]);
                         if (StockList[i].itemnumber == component.get("v.customProductId")) {
                             StockList[i].jsondata = custmizerList;
                             StockList[i].category__c = 'Custom';
@@ -132,13 +138,15 @@
                         }
                     }
 
-                    console.log(cusList);
-                    console.log(StockList);
+                    //console.log(cusList);
+                   // console.log(StockList);
                     component.set("v.Customlist", cusList);
                     component.set("v.Coolerslist", StockList);
-                    console.log(component.get("v.Customlist"));
-                    console.log(component.get("v.Coolerslist"));
-                    console.log(component.get("v.insertList"));
+                    //console.log(component.get("v.Customlist"));
+                    //console.log(component.get("v.Coolerslist"));
+                    //console.log(component.get("v.insertList"));  
+                    }
+                   
                 }
 
 
@@ -343,7 +351,7 @@
     saveQuoteHeader: function(component, event, helper) {
         try {
             var issave = true;
-            helper.saveandcreate(component, event, helper, issave);
+            helper.saveandcreate(component, event,helper, issave);
         } catch (e) {
             console.error(e.message);
             helper.showToast(component, "Error", "Error", e.message);
@@ -355,7 +363,7 @@
     saveandContinueQuoteDetails: function(component, event, helper) {
         try {
             var issave = false;
-            helper.saveandcreate(component, event, helper, issave);
+            helper.saveandcreate(component, event,helper, issave);
         } catch (e) {
             console.error(e.message);
             helper.showToast(component, "Error", "Error", e.message);
@@ -495,7 +503,7 @@
         component.set("v.SapOrgJson", prodId);
     },
 
-    getPricing: function(cmp, event, helper) {
+   /*  getPricing: function(cmp, event, helper) {
         cmp.set("v.loaded", true);
         var stock = cmp.get("v.Coolerslist");
         var custom = cmp.get("v.Customlist");
@@ -547,7 +555,7 @@
         });
 
 
-        getPricing.setCallback(this, function(response) {
+       getPricing.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") {
                 console.log(response.getReturnValue());
@@ -644,7 +652,176 @@
 
         $A.enqueueAction(getPricing);
 
-    },
+    },*/
+        
+         getPricing: function(cmp, event, helper) {
+     cmp.set("v.loaded", true);
+     var stock = cmp.get("v.Coolerslist");
+     var custom = cmp.get("v.Customlist");
+     var noncustom = cmp.get("v.NotCustomlist");
+
+     var lineItems = [];
+
+     var stockList = [];
+     var customlist = [];
+     var customhardcoolers = [];
+
+     cmp.set("v.insertList", lineItems);
+
+     for (let i in stock) {
+         lineItems.push(stock[i])
+     }
+     for (let i in custom) {
+         lineItems.push(custom[i])
+     }
+     for (let i in noncustom) {
+         lineItems.push(noncustom[i])
+     }
+
+
+     if (cmp.get("v.SapOrgJson") != null && cmp.get("v.SapOrgJson") != "") {
+
+         var OrgObj = JSON.parse(cmp.get("v.SapOrgJson"));
+         OrgObj.productMaterial = lineItems;
+     } else {
+         var OrgObj = {
+             "salesOrg": "",
+             "distribution": "",
+             "division": "",
+             "companycode": "",
+             "salesoffice": "",
+             "salesgrp": ""
+         };
+
+         OrgObj.productMaterial = lineItems;
+
+
+     }
+
+     var getPricing = cmp.get("c.getProductPricing");
+     getPricing.setParams({
+         productjson: JSON.stringify(OrgObj)
+     });
+
+     getPricing.setCallback(this, function(response) {
+         var state = response.getState();
+         if (state === "SUCCESS") {
+             console.log(response.getReturnValue());
+             if(response.getReturnValue() == null || response.getReturnValue() == undefined ){ 
+              cmp.set("v.loaded", false);
+              helper.showToast(cmp, "Error!", "Error", "Callout Error!" );
+             } else if(response.getReturnValue().includes("MESSAGE") && response.getReturnValue() != "" ) {
+                 var result = JSON.parse(response.getReturnValue());
+             if(result.MESSAGE != " " || result.MESSAGE != null){
+                 cmp.set("v.loaded", false);
+                helper.showToast(cmp, "Error!", "Error", result.MESSAGE ); 
+                 
+             }else{
+                cmp.set("v.loaded", false); 
+                helper.showToast(cmp, "Error!", "Error", "Callout Error!" ); 
+             }
+                 
+             }  else{
+                  
+             var result = JSON.parse(response.getReturnValue());
+             console.log(result);
+                
+             result.forEach(result1 => {
+                // console.log(result1.PricingList);
+                 lineItems.forEach(item => {
+
+                     if (item.itemnumber == parseInt(result1.ITM_NUMBER) ) {
+
+                         (result1.PricingList).forEach(priceitem => {
+                 console.log("test");
+
+                             if (priceitem.COND_DESC == "Price") {
+                                 item.unitprice = priceitem.COND_VALUE;
+                                console.log(item.unitprice);
+                             }
+                             else if (priceitem.COND_TYPE == "LTAX" ) {
+                                 item.Tax = priceitem.COND_VALUE;
+                  console.log(item.Tax);
+                             }
+                             else if (priceitem.COND_TYPE == "LTOT" ) {
+                                 item.Total = priceitem.COND_VALUE;
+                  console.log(item.Total);
+                             }
+                             else if (priceitem.COND_TYPE == "ZD01" ) {
+                                 let d = priceitem.CONDVALUE;
+                                 let dis = Math.abs(d);
+
+                                 item.Discount = dis.toFixed(2);
+                  console.log(item.Discount);
+                             }
+                         });
+
+                     }
+                 });
+             });
+
+             console.log(lineItems);
+
+
+
+
+             lineItems.forEach(item1 => {
+                 if (item1.category__c == "Stock") {
+                     console.log(item1);
+                     stockList.push(item1);
+                 } else if (item1.category__c == "Custom") {
+                     console.log(item1);
+                     customlist.push(item1);
+                 } else if (item1.category__c == "NonCustom") {
+                     console.log(item1);
+                     customhardcoolers.push(item1);
+                 }
+             });
+             if (stockList.length > 0) {
+                 cmp.set("v.Coolerslist", stockList);
+             }
+             if (customlist.length > 0) {
+                 cmp.set("v.Customlist", customlist);
+             }
+             if (customhardcoolers.length > 0) {
+                 cmp.set("v.NotCustomlist", customhardcoolers);
+             }
+             if (lineItems.length > 0) {
+                 cmp.set("v.insertList", lineItems);
+             }
+
+
+
+
+            // console.log(cmp.get("v.insertList"));
+             console.log(cmp.get("v.Coolerslist"));
+             cmp.set("v.loaded", false);
+             
+             }
+         } else if (state === "INCOMPLETE") {
+             // do something
+            cmp.set("v.loaded", false);
+            helper.showToast(cmp, "Error!", "Error", "transaction is in complete" );
+         } else if (state === "ERROR") {
+             var errors = response.getError();
+             if (errors) {
+                 if (errors[0] && errors[0].message) {
+                     console.log("Error message: " +
+                         errors[0].message);
+                 cmp.set("v.loaded", false);
+                 helper.showToast(cmp, "Error!", "Error", errors[0].message );
+                 }
+             } else {
+                 console.log("Unknown error");
+                 cmp.set("v.loaded", false);
+                 helper.showToast(cmp, "Error!", "Error", "Unknown error");
+             }
+         }
+     });
+
+     $A.enqueueAction(getPricing);
+
+ },
 
     onQuantityChange: function(component, event, helper) {
         console.log(event.target.name);
@@ -809,6 +986,13 @@
             console.log(component.get("v.NotCustomlist"));
 
         }
-    }
+    },
+    
+    handlecancle : function (cmp,event,helper){
+
+     //helper.saveandcreate(component, event);
+     helper.navigatetoobject(cmp, event, cmp.get("v.AccId")); 
+                
+      }
 
 })

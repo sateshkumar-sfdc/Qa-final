@@ -441,7 +441,7 @@
                 
                 <apex:column headerValue="Last Geocode" value=" {!umo.mo.LastGeocodeBatchRun}" rendered="{!NOT(umo.mo.IsReferenceMapObject)}"/>
                                 
-                <apex:column headerValue="Batch Geocode" rendered="{!AND(NOT(umo.mo.IsReferenceMapObject), NOT(umo.mo.isExternalObject))}">
+                <apex:column headerValue="Batch Geocode" rendered="{!AND(AND(NOT(umo.mo.IsReferenceMapObject), NOT(umo.mo.isExternalObject)), NOT(umo.mo.UsesSalesforceGeocodes))}">
                     <apex:outputPanel rendered="{!umo.mo.isActive}">
                         <apex:commandLink value="All" action="{!runBatchGeocode}">
                             <apex:param name="sobj_batchGeo_All_MO" value="{!umo.mo.Name}" assignTo="{!mapObjectForGeocoding}"/>

@@ -94,7 +94,7 @@
     </preferences>
     <preferences>
         <settingName>S1EncryptedStoragePref2</settingName>
-        <settingValue>false</settingValue>
+        <settingValue>true</settingValue>
     </preferences>
     <preferences>
         <settingName>OfflineDraftsEnabled</settingName>

@@ -4,6 +4,6 @@
     <encodingKey>ISO-8859-1</encodingKey>
     <name>Approval Notifications</name>
     <style>none</style>
-    <subject>Approval Request for Account Re-Open</subject>
+    <subject>Approval request to change the Status of the account</subject>
     <type>text</type>
 </EmailTemplate>

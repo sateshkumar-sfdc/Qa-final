@@ -941,6 +941,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>SoldToShipToResponse</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TSTC_AcceptAction</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -10077,6 +10081,10 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>MyProfilePage</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>Payment_Test</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>

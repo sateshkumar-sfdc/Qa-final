@@ -1,0 +1,77 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+ <aura:attribute name="record" type="Object" description="The record object to be displayed"/>
+     <aura:attribute name="simpleRecord" type="Object" description="A simplified view record object to be displayed"/>
+     <aura:attribute name="recordError" type="String" description="An error message bound to force:recordData"/>
+     <force:recordData aura:id="record"
+        layoutType="FULL"
+        recordId="{!v.recordId}"
+        targetError="{!v.recordError}"
+        targetRecord="{!v.record}"
+        targetFields ="{!v.simpleRecord}"
+        mode="VIEW"/>
+	
+     <div class="demo-only" style="height: 640px;">
+	<article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-section slds-is-open">
+                <form class="slds-form--stacked">
+                    <div class="slds">
+                                        <div class="slds-grid slds-wrap slds-grid_align-center slds-grid_align-space ">
+                                            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-2">
+                                           
+                                                
+                                                <div class="slds-form-element">
+                                                     <lightning:input type="text"  label="Sales Org"  disabled="true" value="{!v.simpleRecord.Sales_Organization__c}"/>
+                                                   
+                                                </div>
+                                                {!v.resultSalesOrgList}
+                                                
+                                                
+                                                <div class="slds-form-element">
+                                                     <lightning:input type="text"  label="Distribution Channel"  disabled="true" value="{!v.simpleRecord.Distribution_Channel__c}"/>
+                                                   
+                                                </div>
+                                             
+                                               
+                                                <div class="slds-form-element">
+                                                     <lightning:input type="text" label="Division" disabled="true" value="{!v.simpleRecord.Division__c}"/>
+                                                    
+                                                </div>
+                                               
+                                                
+                                            </div>
+                                            <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-2">
+                                          	 <div class="slds-form-element">
+                                                  <lightning:input type="text"  label="Sales Office" disabled="true" value="{!v.simpleRecord.Sales_Office__c}"/>
+                                                    
+                                                </div>
+                                                
+                                                <div class="slds-form-element">
+                                                     <lightning:input type="text"  label="Sales Group" disabled="true" value="{!v.simpleRecord.Sales_Group__c}"/>
+                                                    
+                                                </div>
+                                                 <div class="slds-form-element ">
+                                                    <div class="slds-form-element__control">
+                                                        <lightning:input type="text" label="Company Code" name="companycode" disabled="true" value="{!v.simpleRecord.Company_Code__c}"/>
+                                                    </div>
+                                                </div> 
+                                              
+            
+                                            </div>
+                                        </div>	
+                                    </div>
+                    
+                </form>
+                
+            </div>
+        
+        </div>
+    
+    </article>
+
+
+
+	</div>
+    
+
+</aura:component>

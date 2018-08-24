@@ -72,7 +72,7 @@ Date         Version          Author             Summary of Changes
                 </div>
                 <div class="slds-col slds-no-flex slds-grid slds-align-top">
                     <div class="slds-button-group"  role="group">
-                        <lightning:button label="Cancel"  />
+                        <lightning:button label="Cancel" onclick="{!c.handlecancle}" />
                         <lightning:button label="Save and Continue"  onclick="{!c.saveandContinueQuoteDetails}"/>
                          <lightning:button label="Get Pricing"  onclick="{!c.getPricing}" />
                         <lightning:button label="Save" onclick="{!c.saveQuoteHeader}" />
@@ -907,7 +907,7 @@ Date         Version          Author             Summary of Changes
              <div class="slds-col slds-no-flex slds-grid  slds-float_right">
 
                     <div class="slds-button-group"  role="group">
-                        <lightning:button label="Cancel"  />
+                         <lightning:button label="Cancel" onclick="{!c.handlecancle}" />
                         <lightning:button label="Save and Continue"  onclick="{!c.saveandContinueQuoteDetails}"/>
                         <lightning:button label="Get Pricing"  onclick="{!c.getPricing}" />
                         <lightning:button label="Save" onclick="{!c.saveQuoteHeader}" />

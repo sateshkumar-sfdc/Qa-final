@@ -51,6 +51,8 @@
 
 		.checkInCheckboxList { display: inline-block; margin-top: -5px; }
 		.checkInCheckboxList td {width: 230px; float: left; }
+
+		.tooltipClass { font-size: 12px; }
 	</style>
 
 	<script type="text/javascript">
@@ -75,7 +77,7 @@
 			<apex:pagemessages />
 			
 			<apex:pageblockbuttons >
-				<apex:commandButton action="{!save}" value="Save" rerender="pentity" rendered="{! hasSelectedEntity && mapObjectName!='' && ((addrLocationSelection == 'self' && showNoLeadContactMessage == false) || addrLocationSelection == 'ref' || addrLocationSelection == 'pulse') }"  onclick="geopointeAjaxStart('#modalWrapper','Saving...');" oncomplete="saveComplete()"/>
+				<apex:commandButton action="{!save}" value="Save" rerender="pentity" rendered="{! hasSelectedEntity && mapObjectName!='' && (addrLocationSelection != 'self' || (addrLocationSelection == 'self' && showNoLeadContactMessage == false)) }"  onclick="geopointeAjaxStart('#modalWrapper','Saving...');" oncomplete="saveComplete()"/>
 				<apex:commandButton action="{!cancel}" value="Cancel"/>
 			</apex:pageblockbuttons>
 			<script type="text/javascript">var saveSuccessful = {!saveSuccessful}</script>
@@ -241,13 +243,36 @@
 				
 				<apex:pageBlockSectionItem >
 					<apex:outputLabel />
-					<apex:outputPanel layout="block" style="margin-bottom: -17px;">
+					<apex:outputPanel layout="block" style="margin-bottom: -17px; position: relative;">
 						<apex:selectRadio value="{!addrLocationSelection}" layout="pageDirection" style="left: -15px; top: -8px; position: relative;">
 							<apex:selectOption itemValue="self" itemLabel="The address fields are on this object." rendered="{!mapObjectSObjectName != 'accountcontactrelation'}" />
 							<apex:selectOption itemValue="ref" itemLabel="The address fields are on a related Salesforce Object that already has a configured Geopointe Map Object."/>
 							<apex:selectOption itemValue="pulse" itemLabel="This is a Geopointe Pulse Map Object." rendered="{!showPulse}"/>
+							<apex:selectOption itemValue="sf" itemLabel="Use geocodes provided by Salesforce." rendered="{!canUseSFGeocodes}"/>
 							<apex:actionSupport event="onchange" action="{!handleAddrLocationSelection}" onsubmit="geopointeAjaxStart('#modalWrapper','Loading...',208);" oncomplete="geopointeAjaxEnd(); createFieldSelectors();" rerender="pentity" status="locationSelection"/>
 						</apex:selectRadio>
+						<img src="{!URLFOR($Resource.images, 'info.png')}" class="gp_hoverhelp" title="_" style="position: absolute; bottom: 20px; left: 19.5em; display: {!IF(canUseSFGeocodes, 'auto', 'none')}" id="gp_hoverhelp_sfgeocodes"/>
+						<div id="gp_hoverhelpContent" style="display:none;"><div id="gp_hoverhelp_sfgeocodes">
+							<p><b>Advantages</b><br/>Geopointe will not modify your records and geocoding generally occurs almost instantly.</p>
+							<p><b>Disadvantages</b><br/>Salesforce only supports geocoding addresses on a few standard objects. You cannot utilize Geopointe's Correct Location feature or use your own custom geocodes with this type of map object.</p>
+							<p>To use Salesforce's geocodes, you must enable the appropriate Data Integration Rule at Setup > Data Management > Data Integration Rules.</p> 
+						</div></div>
+						<script type="text/javascript">
+							// jQuery Tooltip handler
+							jQuery(".gp_hoverhelp").tooltip({
+								track: false,
+								delay: 250,
+								showURL: false,
+								tooltipClass: "tooltipClass",
+								content: function() {
+									if(typeof(gp_tooltips[this.id])=="undefined"){
+										gp_tooltips[this.id] = jQuery('#gp_hoverhelpContent #' + this.id).html();
+									}
+									return gp_tooltips[this.id];
+								} 
+							});
+
+						</script>
 					</apex:outputPanel>
 				</apex:pageBlockSectionItem>
 				
@@ -702,6 +727,130 @@
 							</apex:outputPanel>
 						</apex:pageBlockSectionItem>
 						
+					</apex:pageBlockSection>
+				</apex:outputPanel>
+
+				<apex:outputPanel rendered="{!isSetupCSComplete && addrLocationSelection=='sf'}" >
+					<apex:pageBlockSection title="Define the name and address fields Geopoine should display." collapsible="false" columns="1">   
+						
+						<apex:pageBlockSectionItem helpText="The field that acts as the 'title' of your record (e.g. Account Name, Opportunity Name, Case Number)">
+							<apex:outputPanel >
+								<b>{!NameCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel styleClass="requiredInput" layout="block">
+								<div class="requiredBlock"></div>
+								<span class="selectedFieldNameOutput">{!IF( NameCSObject.pathvalue == NULL && NameCSObject.path == NULL,'Not Defined',NameCSObject.value)}</span>&nbsp;
+								<apex:inputText value="{!NameCSObject.value}" styleClass="CSObjectValue"/>
+								<apex:inputText value="{!NameCSObject.PathValue}" styleClass="CSObjectPathValue"/>                    
+								<a href="#" class="openFieldSelector string" data-dialogTitle="Select a Name Field">[change]</a>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!StreetCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel >
+								<span class="selectedFieldNameOutput">{!IF(StreetCSObject.pathvalue==NULL && StreetCSObject.path==NULL,'Not Defined',StreetCSObject.value)}</span>&nbsp;                 
+								<apex:inputText value="{!StreetCSObject.value}" styleClass="CSObjectValue"/>
+								<apex:inputText value="{!StreetCSObject.PathValue}" styleClass="CSObjectPathValue"/>
+								<a href="#" class="openFieldSelector addressField" data-dialogTitle="Select a Street Field">[change]</a>&nbsp;
+								<a href="#" class="clearSelectedField">[clear]</a>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!CityCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel >
+								<span class="selectedFieldNameOutput">{!IF(CityCSObject.pathvalue==NULL && CityCSObject.path==NULL,'Not Defined',CityCSObject.value)}</span>&nbsp;   
+								<apex:inputText value="{!CityCSObject.value}" styleClass="CSObjectValue"/>   
+								<apex:inputText value="{!CityCSObject.PathValue}" styleClass="CSObjectPathValue"/>
+								<a href="#" class="openFieldSelector addressField" data-dialogTitle="Select a City Field">[change]</a>&nbsp;
+								<a href="#" class="clearSelectedField">[clear]</a>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!StateCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel >
+								<span class="selectedFieldNameOutput">{!IF(StateCSObject.pathvalue==NULL && StateCSObject.path==NULL,'Not Defined',StateCSObject.value)}</span>&nbsp;
+								<apex:inputText value="{!StateCSObject.value}" styleClass="CSObjectValue"/>       
+								<apex:inputText value="{!StateCSObject.PathValue}" styleClass="CSObjectPathValue"/>       
+								<a href="#" class="openFieldSelector addressField" data-dialogTitle="Select a State Field">[change]</a>&nbsp;
+								<a href="#" class="clearSelectedField">[clear]</a>
+							</apex:outputPanel> 
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!ZipCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel >								
+								<span class="selectedFieldNameOutput">{!IF(ZipCSObject.pathvalue==NULL && ZipCSObject.path==NULL,'Not Defined',ZipCSObject.value)}</span>&nbsp;
+								<apex:inputText value="{!ZipCSObject.value}" styleClass="CSObjectValue"/>
+								<apex:inputText value="{!ZipCSObject.PathValue}" styleClass="CSObjectPathValue"/>         
+								<a href="#" class="openFieldSelector addressField" data-dialogTitle="Select a Postal Code Field">[change]</a>&nbsp;
+								<a href="#" class="clearSelectedField">[clear]</a>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!CountryCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel >
+								<span class="selectedFieldNameOutput">{!IF(CountryCSObject.pathvalue==NULL && CountryCSObject.path==NULL,'Not Defined',CountryCSObject.value)}</span>&nbsp;
+								<apex:inputText value="{!CountryCSObject.value}" styleClass="CSObjectValue"/>
+								<apex:inputText value="{!CountryCSObject.PathValue}" styleClass="CSObjectPathValue"/>               
+								<a href="#" class="openFieldSelector addressField" data-dialogTitle="Select a Country Field">[change]</a>&nbsp;
+								<a href="#" class="clearSelectedField">[clear]</a>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+							
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection title="Define the geocode fields used in your Data Integration Rules mapping." collapsible="false" columns="1">
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!LatCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel styleClass="requiredInput" layout="block">
+								<div class="requiredBlock"></div>
+								<span class="selectedFieldNameOutput">{!IF(LatCSObject.pathvalue==NULL && LatCSObject.path==NULL,'Not Defined',LatCSObject.value)}</span>&nbsp;
+								<apex:inputText value="{!LatCSObject.value}" styleClass="CSObjectValue"/>
+								<apex:inputText value="{!LatCSObject.PathValue}" styleClass="CSObjectPathValue"/>
+								<a href="#" class="openFieldSelector latlng" data-dialogTitle="Select a Latitude Field">[change]</a>&nbsp;
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>{!LongCSObject.name}</b>
+							</apex:outputPanel>
+							<apex:outputPanel styleClass="requiredInput" layout="block">
+								<div class="requiredBlock"></div>
+								<span class="selectedFieldNameOutput">{!IF(LongCSObject.pathvalue==NULL && LongCSObject.path==NULL,'Not Defined',LongCSObject.value)}</span>&nbsp;
+								<apex:inputText value="{!LongCSObject.value}" styleClass="CSObjectValue"/>
+								<apex:inputText value="{!LongCSObject.PathValue}" styleClass="CSObjectPathValue"/>
+								<a href="#" class="openFieldSelector latlng" data-dialogTitle="Select a Longitude Field">[change]</a>&nbsp;
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel >
+								<b>Geocode Quality</b>
+							</apex:outputPanel>
+							<apex:outputPanel styleClass="requiredInput" layout="block">
+								<div class="requiredBlock"></div>
+								<span class="selectedFieldNameOutput">{!IF(OnRecordGeocodeQualityCSObject.api==NULL,'Not Defined',OnRecordGeocodeQualityCSObject.api)}</span>&nbsp;   
+								<apex:inputText value="{!OnRecordGeocodeQualityCSObject.api}" styleClass="CSObjectValue"/>   
+								<a href="#" class="openFieldSelector string" data-dialogTitle="Select a Geocode Quality Field">[change]</a>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
 					</apex:pageBlockSection>
 				</apex:outputPanel>
 

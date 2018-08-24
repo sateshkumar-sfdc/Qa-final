@@ -1,3 +1,20 @@
+/*
+*************************************************************
+** Name: AccountToQuote.apxc                               **
+** Copyright notice: 									   **
+** YETI Coolers										       **
+*************************************************************
+** Purpose:                  							   **
+** Account To Quote, Contacts and Opportunity              **
+*************************************************************
+** History:                                                **
+************************************************************* 
+** VERSION AUTHOR DATE DETAIL RELEASE/CSR                  **
+** 1.0 - Satesh Makineni 08/17/2018 INITIAL DEVELOPMENT    **
+** 2.0 -                                                   **
+*************************************************************
+*/
+
 public class AccountToQuote {
     
     
@@ -63,7 +80,7 @@ public class AccountToQuote {
             idList.add(oppId);
         }
         
-        Quote_Header__c qh =  new Quote_Header__c(CurrencyIsoCode = a.CurrencyIsoCode, Account__c = idList[0], Contact__c = idList[1], Opportunity__c = idList[2], status__c = 'new');
+        Quote_Header__c qh =  new Quote_Header__c(CurrencyIsoCode = a.CurrencyIsoCode, Account__c = idList[0], Contact__c = idList[1], Opportunity__c = idList[2], status__c = 'new', Expires__c = System.Today()+30);
         insert qh;
         idList.add(qh.id);
         

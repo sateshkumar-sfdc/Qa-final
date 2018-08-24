@@ -7689,8 +7689,8 @@ AND(
         <description>Only Manager can change this Status</description>
         <errorConditionFormula>AND(
  ISPICKVAL( PRIORVALUE ( Location_Status__c), &quot;Closed&quot;),
- ISPICKVAL(Location_Status__c, &quot;Active&quot;), $Profile.Name = &quot;YETI Field Sales&quot;)  
- || AND(OR(ISPICKVAL( PRIORVALUE ( Location_Status__c), &quot;Active&quot;), (ISPICKVAL( PRIORVALUE ( Location_Status__c),&quot;Inactive&quot;)), (ISPICKVAL( PRIORVALUE ( Location_Status__c),&quot;Under Review&quot;))),ISPICKVAL(Location_Status__c, &quot;Closed&quot;), $Profile.Name = &quot;YETI Field Sales&quot;)</errorConditionFormula>
+ ISPICKVAL(Location_Status__c, &quot;Active&quot;), $Profile.Name = &quot;Bizdev&quot;)  
+ || AND(OR(ISPICKVAL( PRIORVALUE ( Location_Status__c), &quot;Active&quot;), (ISPICKVAL( PRIORVALUE ( Location_Status__c),&quot;Inactive&quot;)), (ISPICKVAL( PRIORVALUE ( Location_Status__c),&quot;Under Review&quot;))),ISPICKVAL(Location_Status__c, &quot;Closed&quot;), $Profile.Name = &quot;Bizdev&quot;)</errorConditionFormula>
         <errorDisplayField>Location_Status__c</errorDisplayField>
         <errorMessage>Account managers only should close the account and be able to do Closed --&gt; Active</errorMessage>
     </validationRules>

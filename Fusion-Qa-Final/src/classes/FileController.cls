@@ -14,27 +14,72 @@ public class FileController {
         
             nameFile= blobToString(EncodingUtil.base64Decode(base64Data),'ISO 8859-1');      
             filelines = nameFile.split('\n');       
-             
-            for(Integer i=1;i<filelines.size();i++){
+      /*  
+        Date d = date.today();
+        String dt = DateTime.newInstance(d.year(),d.month(),d.day()).format('YYYY-MM-dd');
+        ProductSearch Ps = new ProductSearch();
+        List<ProductSearch.Item> itmlist = new List<ProductSearch.Item>();
+        ProductSearch.PRODUCTS products = new ProductSearch.PRODUCTS();
+        */
+        List<String> productlist = new List<String>();
+		map<String,FileDataWrapper> materialFDWMap= new map<String,FileDataWrapper>();
+            for(Integer i=1;i<filelines.size()-1;i++){
                
-              String[] inputvalues = new String[]{};            
+               String[] inputvalues = new String[]{};            
                inputvalues = filelines[i].split(',');
-               system.debug('%%%%%%% each Line::::: '+inputvalues[1] );
+               system.debug('%%%%%%% each Line::::: '+filelines.size() );
+                
+                
+                
+              /*  ProductSearch.Item Itm = new ProductSearch.Item();
+                Itm.MATERIAL = inputvalues[0];
+                Itm.PLANT = '';
+                itmlist.add(Itm);
+                */
+                
                 FileDataWrapper fdw = new FileDataWrapper();
-                fdw.productName = inputvalues[0];
-                fdw.productCode = inputvalues[1];
-                fdw.description = inputvalues[2];
-                fdw.productUrl = inputvalues[3];
-                fdw.quoteHeader = inputvalues[4];
-               /* fdw.artCategory = inputvalues[4];
-                fdw.licensingOrg = inputvalues[5];
-                fdw.siteCategory = inputvalues[6];
-                fdw.royaltyRate = inputvalues[7];
+                fdw.MaterialID = inputvalues[0];
+                fdw.productName = inputvalues[1];
+                fdw.productKey = inputvalues[2];
+                fdw.upk = inputvalues[3];
+                fdw.productCategory = inputvalues[4];
+                fdw.customizableFlag = inputvalues[4];
+                fdw.heirarchy = inputvalues[5];
+                fdw.imageUrl = inputvalues[6];
+                
+                materialFDWMap.put(fdw.MaterialID,fdw);
+                productlist.add(inputvalues[0]);
+               /* fdw.royaltyRate = inputvalues[7];
                 fdw.itemKeyId = inputvalues[8];*/
                 fileDataWrapperList.add(fdw);
-                system.debug('wrapper list-->'+fileDataWrapperList.size());
+              //  system.debug('wrapper list-->'+itm);
             }
-             system.debug('wrapper list 1-->'+fileDataWrapperList.size());
+        
+        ProductServiceRequestApex.AvailabilityWrapper Aw = new ProductServiceRequestApex.AvailabilityWrapper();
+        Aw.salesoffice = 'STD';
+        Aw.salesOrg = '1100';
+        Aw.salesgrp = 'STD';
+        Aw.division = '10';
+        Aw.distribution = '10';
+        Aw.productMaterial = productlist;
+		String materialStr = JSON.serialize(Aw);
+		system.debug('test string-->'+materialStr);  
+        system.debug('callout result-->'+ProductServiceRequestApex.checkAvailability(materialStr));
+         /*   products.item = itmlist;
+            Ps.PRODUCTS = products;
+            Ps.CUSTOMER = '';
+        	Ps.SALES_ORG = '1100';
+            Ps.DISTR_CHAN = '10'; 
+            Ps.DIVISION = '10';
+			Ps.SALES_GRP = 'STD';
+			Ps.SALES_OFF =  'STD';
+        	Ps.PRICE_DATE = dt;
+             system.debug('Test Request-->'+Ps);
+            string request = JSON.serialize(Ps);
+            String JsonResponse;
+            JsonResponse = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_Availability', request, 'POST');
+            system.debug('replace string-->'+JsonResponse.replace('RETURN', 'RETURN_Z'));
+             system.debug('wrapper list 1-->'+fileDataWrapperList.size());*/
              return fileDataWrapperList;
     }
     
@@ -60,15 +105,18 @@ public class FileController {
     
     public class FileDataWrapper 
     {
+        @AuraEnabled Public String MaterialID {get;set;}  
         @AuraEnabled Public String productName {get;set;}
-        @AuraEnabled Public String productCode {get;set;}
-        @AuraEnabled Public String description {get;set;}     
-        @AuraEnabled Public String productUrl {get;set;} 
-        @AuraEnabled Public String quoteHeader {get;set;}
-       /* @AuraEnabled Public String artCategory {get;set;}      
-		@AuraEnabled Public String licensingOrg {get;set;}
-        @AuraEnabled Public String siteCategory {get;set;}     
-        @AuraEnabled Public String royaltyRate {get;set;}     
+        @AuraEnabled Public String productKey {get;set;}
+        @AuraEnabled Public String upk {get;set;}     
+        @AuraEnabled Public String productCategory {get;set;} 
+        @AuraEnabled Public String customizableFlag {get;set;}
+		@AuraEnabled Public String heirarchy {get;set;}
+        @AuraEnabled Public String imageUrl {get;set;}  
+        @AuraEnabled Public String quantity {get;set;}
+        @AuraEnabled Public String errorMessage {get;set;} 
+        @AuraEnabled Public Double COND_VALUE {get;set;} 
+       /* @AuraEnabled Public String royaltyRate {get;set;}     
         @AuraEnabled Public String itemKeyId {get;set;}*/
 
     }

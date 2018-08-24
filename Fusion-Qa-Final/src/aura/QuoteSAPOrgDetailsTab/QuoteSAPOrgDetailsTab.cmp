@@ -15,6 +15,7 @@
     <aura:attribute name="divString" type="String" />
     <aura:attribute name="companyString" type="String" />
     <aura:attribute name="salesofficeString" type="String" />
+    <aura:attribute name="salesgroupString" type="String" />
     <aura:attribute name="SeedDataWrapper" type="SeedDataProcessorApex.SeedDataWrapper"  />
     <aura:attribute name="userCountry" type="String" />
     <aura:attribute name="metaDataMap" type="Map" />
@@ -40,7 +41,7 @@
                                                 </div-->
                                                 
                                                 <div class="slds-form-element">
-                                                    <lightning:select  name="salesorg" label="Sales Org" aura:id="salesorgId" required="true" messageWhenValueMissing = "Please select a value" onchange="{!c.getDependantValues}" value="{!v.salesorgValue}">
+                                                    <lightning:select  name="salesorg" label="Sales Org" aura:id="salesorgId" onchange="{!c.getDependantValues}" value="{!v.salesorgValue}">
                                                         <!--option value="">{!v.salesorgValue}</option-->
                                                         <aura:iteration items="{!v.resultSalesOrgList}" var="os">
                                                             <!--option text="{!os.FieldDescription__c}" value="{!os.FieldValue__c}" ></option-->
@@ -53,7 +54,7 @@
                                                 
                                                 
                                                 <div class="slds-form-element">
-                                                    <lightning:select  name="distChan" label="Distribution Channel" aura:id="distributionchannelId" required="true" messageWhenValueMissing = "Please select a value" onchange="{!c.getDependantValues}" value="{!v.distString}">
+                                                    <lightning:select  name="distChan" label="Distribution Channel" aura:id="distributionchannelId" onchange="{!c.getDependantValues}" value="{!v.distString}">
                                                         <!--option text="Select a value" value=""/-->
                                                         <aura:iteration items="{!v.resultDistChanList}" var="dc">
                                                             <option value="{!dc.FieldValue__c}" selected="{!if(v.distString==dc.FieldValue__c,'selected','')}">{!dc.FieldDescription__c}</option>
@@ -64,7 +65,7 @@
                                              
                                                
                                                 <div class="slds-form-element">
-                                                    <lightning:select  name="division" label="Division" aura:id="divisionId" required="true" messageWhenValueMissing = "Please select a value" onchange="{!c.getDependantValues}" value="{!v.divString}">
+                                                    <lightning:select  name="division" label="Division" aura:id="divisionId" onchange="{!c.getDependantValues}" value="{!v.divString}">
                                                         <!--option text="Select a value" value=""/-->
                                                         <aura:iteration items="{!v.divisionList}" var="dv">
                                                             <option value="{!dv.FieldValue__c}" selected="{!if(v.divString==dv.FieldValue__c,'selected','')}">{!dv.FieldDescription__c}</option>
@@ -76,19 +77,23 @@
                                             </div>
                                             <div class="slds-col--padded slds-size--1-of-2 slds-medium-size--1-of-2">
                                           	 <div class="slds-form-element">
-                                                    <lightning:select  name="salesoffice" label="Sales Office" aura:id="salesofficeId" required="true" messageWhenValueMissing = "Please select a value" onchange="{!c.getDependantValues}" value="{!v.salesofficeString}">
+                                                    <lightning:select  name="salesoffice" label="Sales Office" aura:id="salesofficeId" onchange="{!c.getDependantValues}" value="{!v.salesofficeString}">
                                                         <option text="Select a value" value=""/>
                                                         <aura:iteration items="{!v.salesOffList}" var="sof">
-                                                            <option text="{!sof.FieldDescription__c}" value="{!sof.FieldValue__c}"/>
+                                                            <!--option text="{!sof.FieldDescription__c}" value="{!sof.FieldValue__c}"/-->
+                                                            <option value="{!sof.FieldValue__c}" selected="{!if(v.salesofficeString==sof.FieldValue__c,'selected','')}">{!sof.FieldDescription__c}</option>
+                          
                                                         </aura:iteration>
                                                     </lightning:select>
                                                 </div>
                                                 
                                                 <div class="slds-form-element">
-                                                    <lightning:select  name="salesgroup" label="Sales Group" aura:id="salesgroupId" required="true" messageWhenValueMissing = "Please select a value" onchange="{!c.onSalesGroupChange}" >
+                                                    <lightning:select  name="salesgroup" label="Sales Group" aura:id="salesgroupId" onchange="{!c.onSalesGroupChange}" value="{!v.salesgroupString}" >
                                                         <option text="Select a value" value=""/>
                                                         <aura:iteration items="{!v.salesgrpList}" var="sg">
-                                                            <option text="{!sg.FieldDescription__c}" value="{!sg.FieldValue__c}"/>
+                                                            <!--option text="{!sg.FieldDescription__c}" value="{!sg.FieldValue__c}"/-->
+                                                            <option value="{!sg.FieldValue__c}" selected="{!if(v.salesofficeString==sg.FieldValue__c,'selected','')}">{!sg.FieldDescription__c}</option>
+                          
                                                         </aura:iteration>
                                                     </lightning:select>
                                                 </div>

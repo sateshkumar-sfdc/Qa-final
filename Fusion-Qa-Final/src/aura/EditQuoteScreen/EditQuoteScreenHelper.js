@@ -1,40 +1,48 @@
 ({
-
-
-    saveandcreate: function(component, event, helper, issave) {
+    
+    saveandcreate: function(component, event, helper,issave) {
        component.set("v.loaded", true);
         var listnew = component.get("v.insertList");
-        console.log(listnew)
-         
-     var a =    component.get("v.Customlist");
-     var b   = component.get("v.customizerlist");
-     var c  =   component.get("v.NotCustomlist");
+       var Saporgdetails;
+       if ( component.get("v.SapOrgJson") != null && component.get("v.SapOrgJson") != "" ){
+           console.log("hai");
+            var OrgObj = JSON.parse(component.get("v.SapOrgJson"));
+            console.log(OrgObj);
+            console.log(JSON.stringify(OrgObj));
+        Saporgdetails = JSON.stringify(OrgObj);
         
-       
-        
-        
-       //component.set("v.testlist",d);
-        console.log("its my name");
-       console.log(component.get("v.testlist"));
-        
-console.log(JSON.stringify(component.get("v.insertList")) );
-        
-        
+        } else{
+            var OrgObj = {
+                "salesOrg":"",
+                "distribution":"",
+                "division":"",
+                "companycode":"",
+                "salesoffice":"",
+                "salesgrp":""
+            };
+           console.log(JSON.stringify(OrgObj));
+           Saporgdetails = JSON.stringify(OrgObj); 
+        }
+        console.log(listnew);
         var Quotedetails = {
             "accountID": component.get("v.AccId"),
             "opportunityId": component.get("v.OppId"),
             "InHandsDate": component.find("inhanddateId").get("v.value"),
-            "DoNotShipBefore": component.find("DoNotShipBeforeId").get("v.value")
+            "DoNotShipBefore": component.find("DoNotShipBeforeId").get("v.value"),
+            "itemnumbertocature" : component.get("v.itemnumber")
+        
         }
-console.log(JSON.stringify(Quotedetails));
+        
+        
+        console.log(JSON.stringify(Quotedetails));
         var action3 = component.get("c.saveandupdateQuote");
         action3.setParams({
             newList: JSON.stringify(component.get("v.insertList")),
             //updateList: JSON.stringify(component.get("v.updatedList")),
             QuoteId: component.get("v.quoteID"),
-            QuoteDetails: JSON.stringify(Quotedetails)
+            QuoteDetails: JSON.stringify(Quotedetails),
+            sapdetails : Saporgdetails
         });
-
         action3.setCallback(this, function(response2) {
            	
             console.log(response2.getReturnValue());
@@ -69,50 +77,17 @@ console.log(JSON.stringify(Quotedetails));
                 }
                 console.log(listnew);
                 component.set("v.insertList",listnew);
-               /* for(var i=0; i<listnew.length; i++){
-                    if(listnew[i].category__c == 'Custom'){
-                        
-                    } 
-                }*/
-                
-                 //component.set("v.Coolerslist",listnew);
                 console.log(JSON.stringify(component.get("v.insertList")));
                 console.log(component.get("v.insertList"));
                 console.log(component.get("v.Coolerslist"));
-                
-               /* if ((results.newListupdated).length > 0) {
-                    console.log(results.newListupdated != null);
-                    let ResupdatedList = component.get("v.updatedList");
-                    for (var i = 0; i < listnew.length; i++) {
-                        for (var j = 0; j < (results.newListupdated).length; j++) {
-                            if (listnew[i].itemnumber == results.newListupdated[j].Quote_Item_Number__c) {
-                                console.log("get inside");
-                                listnew[i].headerid = results.quoteId;
-                                listnew[i].lineId = results.newListupdated[j].Id;
-                                ResupdatedList.push(listnew[i]);
-                            }
-                        }
-                    }
-                    console.log("ResupdatedList");
-                    console.log(ResupdatedList);
-                    let emptylist = [];
-                    component.set("v.insertList", emptylist);
-                    component.set("v.updatedList", ResupdatedList);
-                    console.log('total List');
-                    console.log(component.get("v.updatedList"));
-
-                    console.log(component.get("v.insertList"));
-                    component.set("v.quoteID", results.quoteId);
-                    console.log(component.get("v.quoteID"));
-                }*/
-               // console.log(results);
-               component.set("v.loaded", false);
+                component.set("v.loaded", false);
                 if (issave) {
                     this.showToast(component, "Success!", "success", "Transaction Successfully Saved.");
                    this.navigatetoobject(component, event, component.get("v.quoteID"));
                     $A.get("e.force:refreshView").fire();
 
-                } else {
+                } 
+                else{
                     this.showToast(component, "Success!", "success", "The record has been updated successfully.");
                 }
 
@@ -136,6 +111,139 @@ console.log(JSON.stringify(Quotedetails));
         });
         $A.enqueueAction(action3);
     },
+
+
+    /*saveandcreate: function(component, event, helper, issave) {
+     component.set("v.loaded", true);
+     // var listnew = component.get("v.insertList");
+     //console.log(listnew)
+     var stock = component.get("v.Coolerslist");
+     var custom = component.get("v.Customlist");
+     var noncustom = component.get("v.NotCustomlist");
+
+     var listnew = [];
+     var listmap = new Map();
+
+
+
+
+     for (let i in stock) {
+         listnew.push(stock[i]);
+         listmap.set(stock[i].itemnumber, stock[i]);
+         console.log(listmap);
+     }
+     for (let i in custom) {
+         listnew.push(custom[i]);
+         listmap.set(custom[i].itemnumber, custom[i]);
+     }
+     for (let i in noncustom) {
+         listnew.push(noncustom[i]);
+         listmap.set(custom[i].itemnumber, custom[i]);
+     }
+
+
+
+     console.log("map");
+     console.log(listmap);
+
+
+     //component.set("v.testlist",d);
+     console.log("its my name");
+     console.log(component.get("v.testlist"));
+
+     console.log(JSON.stringify(component.get("v.insertList")));
+
+
+     var Quotedetails = {
+         "accountID": component.get("v.AccId"),
+         "opportunityId": component.get("v.OppId"),
+         "InHandsDate": component.find("inhanddateId").get("v.value"),
+         "DoNotShipBefore": component.find("DoNotShipBeforeId").get("v.value"),
+         "itemnumbertocature" : component.get("v.itemnumber")
+     }
+     console.log(JSON.stringify(Quotedetails));
+     var action3 = component.get("c.saveandupdateQuote");
+     action3.setParams({
+         newList: JSON.stringify(component.get("v.insertList")),
+         //updateList: JSON.stringify(component.get("v.updatedList")),
+         QuoteId: component.get("v.quoteID"),
+         QuoteDetails: JSON.stringify(Quotedetails)
+     });
+
+     action3.setCallback(this, function(response2) {
+
+         console.log(response2.getReturnValue());
+         var state = response2.getState();
+         console.log(state);
+         if (state === "SUCCESS") {
+             var results = response2.getReturnValue();
+             component.set("v.quoteID", results.quoteId);
+             console.log(JSON.parse(results.jsnString));
+             var objectIDs = JSON.parse(results.jsnString);
+
+             objectIDs.forEach(obj => {
+                 
+                 var values = listmap.get(obj.itemID);
+                 console.log("values");
+                 console.log(values);
+                 values.QuoteItemId = obj.QuoteItemId;
+
+                 obj.ArtIds.forEach(objid => {
+
+                     values.jsondata.forEach(jsonobj => {
+
+                         if (jsonobj.customtype == objid.Name) {
+
+                             jsonobj.artid = objid.Id;
+
+                         }
+
+                     });
+
+                 });
+
+
+             });
+
+
+             console.log(listnew);
+             component.set("v.insertList", listnew);
+
+             console.log(JSON.stringify(component.get("v.insertList")));
+             console.log(component.get("v.insertList"));
+             console.log(component.get("v.Coolerslist"));
+
+
+             component.set("v.loaded", false);
+             if (issave) {
+                 this.showToast(component, "Success!", "success", "Transaction Successfully Saved.");
+                 this.navigatetoobject(component, event, component.get("v.quoteID"));
+                 $A.get("e.force:refreshView").fire();
+
+             } else {
+                 this.showToast(component, "Success!", "success", "The record has been updated successfully.");
+             }
+
+         } else if (status === "INCOMPLETE") {
+             //console.log("No response from server or client is offline.");
+             this.showToast(component, "Error", "Error", "Incomplete Transaction Try again.");
+             // Show offline error
+         } else if (state === "ERROR") {
+             var errors = response.getError();
+             if (errors) {
+                 if (errors[0] && errors[0].message) {
+                     // console.log("Error message: " + errors[0].message);
+                     this.showToast(component, "Error", "Error", errors[0].message);
+                 }
+             } else {
+                 //console.log("Unknown error");
+                 this.showToast(component, "Error", "Error", "Unknown error Occurred Try After SomeTime.");
+             }
+
+         }
+     });
+     $A.enqueueAction(action3);
+ },*/
 
     showToast: function(component, title, type, message) {
         try {
@@ -425,7 +533,9 @@ console.log(JSON.stringify(Quotedetails));
                 "Name": prodId.ProductName__c,
                 "ProductLocation__c": prodId.ProductURL__c,
                 "category__c" : prodId.category__c,
-                "MaterialID__c" : prodId.MaterialID__c
+                "MaterialID__c" : prodId.MaterialID__c,
+                "UPK__c" : prodId.UPK__c
+                
             }
             lineobj1.pricing = returnobj[0];
             lineobj1.unitprice = returnobj[0].COND_VALUE;
@@ -441,6 +551,7 @@ console.log(JSON.stringify(Quotedetails));
             insertlst.push(lineobj1);
             cmp.set("v.insertList", insertlst);
             cmp.set("v.itemnumber", itmnum1);
+            console.log(cmp.get("v.insertList"));
         } else {
             let lineobj1 = {
                 "itemnumber": itmnum1.toString(),
@@ -463,7 +574,7 @@ console.log(JSON.stringify(Quotedetails));
             var insertlst1 = cmp.get("v.insertList");
             insertlst1.push(lineobj1);
             cmp.set("v.insertList", insertlst1);
-console.log(cmp.get("v.insertList"));
+            console.log(cmp.get("v.insertList"));
             cmp.set("v.itemnumber", itmnum1);
         }
                   cmp.set("v.loaded", false);

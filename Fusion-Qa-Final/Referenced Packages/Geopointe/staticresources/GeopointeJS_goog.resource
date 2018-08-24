@@ -1070,9 +1070,9 @@ function gp_handlePOI(thisPOIC, thisPOI){
 		// Build the InfoContentHTML
 		var tmpInfoContentHTML = '<div class="poiActions"></div>';
 			
-		var hoverText = thisPOI.title;
+		var hoverText = gp_escapeHtml(thisPOI.title);
 		if (thisPOI.title2 != ''){
-			hoverText = '<strong>'+ thisPOI.title + '</strong><br/>' + thisPOI.title2;
+			hoverText = '<strong>'+ gp_escapeHtml(thisPOI.title) + '</strong><br/>' + gp_escapeHtml(thisPOI.title2);
 		}
 		
 		// Create this GMarker
@@ -1340,7 +1340,7 @@ function gp_createMarker(latlng,title,html,image,uid,place,maplabel) {
 	}
 	
 	// Add custom properties to it
-	marker.tooltip = '<div class="gp_tooltip nowrap" notranslate>'+gp_escapeHtml(title)+'</div>';
+	marker.tooltip = '<div class="gp_tooltip nowrap" notranslate>'+title+'</div>';
 	marker.tooltipDetail = '';
 	if(html){
 		marker.tooltipDetail = html.substring(0,html.indexOf('<div class="poiActions">'));

@@ -20,9 +20,9 @@
                 {
                     component.set("v.salesorgValue",seedResponse.countrySeedDataMap[seedResponse.userCountry].Sales_Org__c);
                 }
-               
+               	//var distDivVal = $A.get("$Label.c.Default_SalesOffice_SalesOrg");
                 
-                
+               //console.log('distt-->'+distDivVal);
                 //component.set("v.resultSalesOrgList",seedResponse.countrySeedDataMap);
                 console.log(seedResponse.seedDataKeyValuesMap_wrapper["SALESORG"]);
                 component.set("v.resultSalesOrgList",seedResponse.seedDataKeyValuesMap_wrapper["SALESORG"]);
@@ -36,12 +36,15 @@
             	//component.find("divisionId").set("v.value",initVal);
                 
                 component.set("v.distString",initVal);
-                //component.set("v.divString",initVal);
+                //component.set("v.divString",initVal); salesofficeString
+               
                 helper.setCompany(component);
                 var dep = 'Init';
                 //helper.evaluateDependents(component,'1100','DISTR_CHAN',dependantlist);
                 helper.fetchDependants(component,dep);
                 //helper.initialLoad(component);
+               // component.set("v.salesofficeString",distDivVal);
+                //component.set("v.salesgroupString",distDivVal);
                  
                 var disp = component.get("v.distString");
                 console.log("test disp"+disp);

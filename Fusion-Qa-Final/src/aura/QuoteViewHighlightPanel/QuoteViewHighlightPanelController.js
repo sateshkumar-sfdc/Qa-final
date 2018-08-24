@@ -67,7 +67,7 @@
     
     navigateToEditScreen :function(component, event, helper) {
      var quoteHeader1 = component.get("v.simpleRecord");
-        alert("test");
+       // alert("test");
         console.log(quoteHeader1);
      var evt = $A.get("e.force:navigateToComponent");
         evt.setParams({

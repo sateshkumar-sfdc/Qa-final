@@ -4,9 +4,9 @@
         try {
             
             var action = component.get("c.getQuoteDetails"); 
-        action.setParams({
+         action.setParams({
             recId : component.get("v.quoteID")
-        });
+         });
         action.setCallback(this, function(response) {
            console.log(response.getReturnValue());
            var results = response.getReturnValue();
@@ -21,10 +21,12 @@
             component.set("v.Access",results.Accessble);
             console.log(component.get("v.Access"));
             var lineitemList = JSON.parse(results.lineList);
-             var stockList = [];
-        
-        var customlist = [];
-        var customhardcoolers = [];
+            
+            
+            if(lineitemList.length > 0){
+                 var stockList = [];
+            var customlist = [];
+            var customhardcoolers = [];
             
              for (let i = 0; i < lineitemList.length; i++) {
                     if (lineitemList[i].category__c == "Stock") {
@@ -37,62 +39,42 @@
                         customhardcoolers.push(lineitemList[i]);
                         component.set("v.NotCustomlist", customhardcoolers);
                     }
-                }
-           
-           /*component.set("v.QuoteObj", response.getReturnValue()); 
-            var obj = component.get("v.QuoteObj");
-            console.log(obj.In_Hands_Date__c);
-            component.set("v.OppId",results.Account__c);
-            component.set("v.AccId",results.Opportunity__c);
-            component.set("v.Expiredate",results.ExpireQuote__c);
-            component.set("v.Coolerslist",results.Quote_Items__r);
-            var updatelist = component.get("v.updatedList");
-            for(var i = 0; i < results.Quote_Items__r.length; i++){
-                var updateobj = {
-                    Name:  results.Quote_Items__r[i].Name,
-                    ProductLocation__c : results.Quote_Items__r[i].ProductUrl__c,
-                    Description : results.Quote_Items__r[i].Product_Description__c,
-                    headerid :  results.Quote_Items__r[i].Quote_Header__c,
-                    lineId :  results.Quote_Items__r[i].Id
-                }
-              updatelist.push(updateobj);  
+                }  
             }
-            component.set("v.updatedList",updatelist);
-            console.log("updatelist");
-            console.log(component.get("v.updatedList"));*/
-            
-        });
+         
+           });
         $A.enqueueAction(action);
     
 
 
             window.addEventListener("message", function(event) {
-                console.log(event.data);
+              //  console.log(event.data);
                 var jsndata = event.data
                 if (jsndata.includes("isEdit")) {
-                    console.log("testforow" + event.data);
+                    
+                   // console.log("testforow" + event.data);
                     var edata = JSON.parse(jsndata);
-                    console.log(edata);
+                   // console.log(edata);
                     var itno = component.get("v.CitemNumber");
-                    console.log(itno);
+                   // console.log(itno);
                     var side = component.get("v.side");
-                    console.log(side);
+                   // console.log(side);
 
                     var evdata = edata.editdata;
-                    console.log(evdata);
+                    //console.log(evdata);
 
                     var v = evdata.toString();
                     var m = v.replace(' "{ ', "{");
                     var o = m.replace('"{', '{');
                     var n = o.replace(/\\/g, "");
 
-                    console.log("n");
-                    console.log(n);
+                   // console.log("n");
+                   // console.log(n);
 
                     var jsn = "[" + n + "]"
 
-                    var custmizerList = [];
-                    custmizerList = JSON.parse(jsn);
+                   // var custmizerList = [];
+                   var  custmizerList = JSON.parse(jsn);
                     console.log(custmizerList);
                     var cusList = component.get("v.Customlist");
                     console.log(component.get("v.Customlist"));
@@ -100,13 +82,13 @@
                         if (cusList[i].itemnumber == itno) {
                             for (var j = 0; j < cusList[i].jsondata.length; j++) {
                                 // cusList[i].jsondata = custmizerList;
-                                console.log(cusList[i].jsondata[j].ramsideloc);
+                               // console.log(cusList[i].jsondata[j].ramsideloc);
                                 if (cusList[i].jsondata[j].ramsideloc != side) {
                                     //cusList[i].jsondata.splice(j, 1);
                                     custmizerList.push(cusList[i].jsondata[j]);
-                                    console.log("real logic");
-                                    console.log(cusList[i].jsondata[j]);
-                                    console.log(custmizerList);
+                                  
+                                   // console.log(cusList[i].jsondata[j]);
+                                   // console.log(custmizerList);
                                 }
 
                                 // }else{
@@ -117,29 +99,30 @@
                         }
                         // cusList[i].jsondata = custmizerList;
                     }
-                    console.log(custmizerList);
+                   // console.log(custmizerList);
                     component.set("v.Customlist", cusList);
-                    console.log(component.get("v.Customlist"));
+                    //console.log(component.get("v.Customlist"));
                     // component.set("v.CitemNumber",null); 
 
                 } else {
-                    console.log(component.get("v.Coolerslist"));
-                    console.log(component.get("v.Customlist"));
-                    console.log(component.get("v.customProductId"));
+                    //console.log(component.get("v.Coolerslist"));
+                    //console.log(component.get("v.Customlist"));
+                    //console.log(component.get("v.customProductId"));
                     var v = event.data.toString();
                     var m = v.replace(' "{ ', "{");
                     var o = m.replace('"{', '{');
                     var n = o.replace(/\\/g, "");
                     var jsn = "[" + n + "]"
-                    let custmizerList = [];
-                    custmizerList = JSON.parse(jsn);
+                    
+                   var custmizerList = JSON.parse(jsn);
                     console.log(custmizerList);
                     var cusList = component.get("v.Customlist");
                     var StockList = component.get("v.Coolerslist");
-                    console.log(cusList);
-                    console.log(StockList);
-                    for (var i = 0; i < StockList.length; i++) {
-                        console.log(StockList[i]);
+                    //console.log(cusList);
+                   // console.log(StockList);
+                    if(StockList.length > 0){
+                        for (var i = 0; i < StockList.length; i++) {
+                       // console.log(StockList[i]);
                         if (StockList[i].itemnumber == component.get("v.customProductId")) {
                             StockList[i].jsondata = custmizerList;
                             StockList[i].category__c = 'Custom';
@@ -148,13 +131,15 @@
                         }
                     }
 
-                    console.log(cusList);
-                    console.log(StockList);
+                    //console.log(cusList);
+                    //console.log(StockList);
                     component.set("v.Customlist", cusList);
                     component.set("v.Coolerslist", StockList);
-                    console.log(component.get("v.Customlist"));
-                    console.log(component.get("v.Coolerslist"));
-                    console.log(component.get("v.insertList"));
+                    //console.log(component.get("v.Customlist"));
+                    //console.log(component.get("v.Coolerslist"));
+                    //console.log(component.get("v.insertList"));
+                    }
+                    
                 }
 
 
@@ -512,141 +497,173 @@
     },
 
     getPricing: function(cmp, event, helper) {
-        cmp.set("v.loaded", true);
-        var stock = cmp.get("v.Coolerslist");
-        var custom = cmp.get("v.Customlist");
-        var noncustom = cmp.get("v.NotCustomlist");
+     cmp.set("v.loaded", true);
+     var stock = cmp.get("v.Coolerslist");
+     var custom = cmp.get("v.Customlist");
+     var noncustom = cmp.get("v.NotCustomlist");
 
-        var lineItems = [];
-        var stockList = [];
-        // cmp.set("v.Coolerslist",stockList);
-        var customlist = [];
-        var customhardcoolers = [];
+     var lineItems = [];
 
-        cmp.set("v.insertList", lineItems);
-        for (let i in stock) {
-            lineItems.push(stock[i])
-        }
-        for (let i in custom) {
-            lineItems.push(custom[i])
-        }
-        for (let i in noncustom) {
-            lineItems.push(noncustom[i])
-        }
-         if ( cmp.get("v.SapOrgJson") != null && cmp.get("v.SapOrgJson") != "" ){
-          
-       var OrgObj = JSON.parse(cmp.get("v.SapOrgJson"));
-        console.log(OrgObj);
-        OrgObj.productMaterial = lineItems;
-        console.log(JSON.stringify(OrgObj));
-        
-           console.log(OrgObj); 
-        } else{
-            var OrgObj = {
-                "salesOrg":"",
-                "distribution":"",
-                "division":"",
-                "companycode":"",
-                "salesoffice":"",
-                "salesgrp":""
-            };
-           OrgObj.productMaterial = lineItems;
-           
-            
-        }
+     var stockList = [];
+     var customlist = [];
+     var customhardcoolers = [];
 
-        
+     cmp.set("v.insertList", lineItems);
 
-        var getPricing = cmp.get("c.getProductPricing");
-        getPricing.setParams({
-            productjson: JSON.stringify(OrgObj)
-        });
+     for (let i in stock) {
+         lineItems.push(stock[i])
+     }
+     for (let i in custom) {
+         lineItems.push(custom[i])
+     }
+     for (let i in noncustom) {
+         lineItems.push(noncustom[i])
+     }
 
 
-        getPricing.setCallback(this, function(response) {
-            var state = response.getState();
-            if (state === "SUCCESS") {
-                console.log(response.getReturnValue());
-                var result = JSON.parse(response.getReturnValue());
-                console.log(result);
+     if (cmp.get("v.SapOrgJson") != null && cmp.get("v.SapOrgJson") != "") {
+
+         var OrgObj = JSON.parse(cmp.get("v.SapOrgJson"));
+         OrgObj.productMaterial = lineItems;
+     } else {
+         var OrgObj = {
+             "salesOrg": "",
+             "distribution": "",
+             "division": "",
+             "companycode": "",
+             "salesoffice": "",
+             "salesgrp": ""
+         };
+
+         OrgObj.productMaterial = lineItems;
 
 
-                for (let i = 0; i < result.length; i++) {
+     }
 
-                    for (let j = 0; j < lineItems.length; j++) {
+     var getPricing = cmp.get("c.getProductPricing");
+     getPricing.setParams({
+         productjson: JSON.stringify(OrgObj)
+     });
 
-                        if (lineItems[j].itemnumber == parseInt(result[i].ITM_NUMBER)) {
+     getPricing.setCallback(this, function(response) {
+         var state = response.getState();
+         if (state === "SUCCESS") {
+             console.log(response.getReturnValue());
+             if(response.getReturnValue() == null || response.getReturnValue() == undefined ){ 
+              cmp.set("v.loaded", false);
+              helper.showToast(cmp, "Error!", "Error", "Callout Error!" );
+             } else if(response.getReturnValue().includes("MESSAGE") && response.getReturnValue() != "" ) {
+                 var result = JSON.parse(response.getReturnValue());
+             if(result.MESSAGE != " " || result.MESSAGE != null){
+                 cmp.set("v.loaded", false);
+                helper.showToast(cmp, "Error!", "Error", result.MESSAGE ); 
+                 
+             }else{
+                cmp.set("v.loaded", false); 
+                helper.showToast(cmp, "Error!", "Error", "Callout Error!" ); 
+             }
+                 
+             }  else{
+                  
+             var result = JSON.parse(response.getReturnValue());
+             console.log(result);
+                
+             result.forEach(result1 => {
+                // console.log(result1.PricingList);
+                 lineItems.forEach(item => {
 
-                            console.log(parseInt(result[i].ITM_NUMBER));
+                     if (item.itemnumber == parseInt(result1.ITM_NUMBER) ) {
 
-                            for (let k = 0; k < result[i].PricingList.length; k++) {
-                                console.log("1");
-                                if (result[i].PricingList[k].COND_DESC == "Price") {
+                         (result1.PricingList).forEach(priceitem => {
+                 console.log("test");
 
-                                    console.log(result[i].PricingList[k].COND_VALUE);
-                                    lineItems[j].unitprice = result[i].PricingList[k].COND_VALUE;
+                             if (priceitem.COND_DESC == "Price") {
+                                 item.unitprice = priceitem.COND_VALUE;
+                                console.log(item.unitprice);
+                             }
+                             else if (priceitem.COND_TYPE == "LTAX" ) {
+                                 item.Tax = priceitem.COND_VALUE;
+                  console.log(item.Tax);
+                             }
+                             else if (priceitem.COND_TYPE == "LTOT" ) {
+                                 item.Total = priceitem.COND_VALUE;
+                  console.log(item.Total);
+                             }
+                             else if (priceitem.COND_TYPE == "ZD01" ) {
+                                 let d = priceitem.CONDVALUE;
+                                 let dis = Math.abs(d);
 
-                                }
+                                 item.Discount = dis.toFixed(2);
+                  console.log(item.Discount);
+                             }
+                         });
 
-                                if (result[i].PricingList[k].COND_TYPE == "LTAX") {
-                                    lineItems[j].Tax = result[i].PricingList[k].COND_VALUE;
-                                }
+                     }
+                 });
+             });
 
-                                if (result[i].PricingList[k].COND_TYPE == "LTOT") {
-                                    lineItems[j].Total = result[i].PricingList[k].COND_VALUE;
-                                }
-                                if (result[i].PricingList[k].COND_TYPE == "ZD01") {
-                                    let d = result[i].PricingList[k].CONDVALUE;
-                                   
-                                    let dis =  Math.abs(d); 
-                                    lineItems[j].Discount = dis.toFixed(2); ;
-                                }
-                            }
-
-                        }
+             console.log(lineItems);
 
 
-                    }
 
-                }
-                for (let i = 0; i < lineItems.length; i++) {
-                    if (lineItems[i].category__c == "Stock") {
-                        stockList.push(lineItems[i]);
-                        cmp.set("v.Coolerslist", stockList);
-                    } else if (lineItems[i].category__c == "Custom") {
-                        customlist.push(lineItems[i]);
-                        cmp.set("v.Customlist", customlist);
-                    } else if (lineItems[i].category__c == "NonCustom") {
-                        customhardcoolers.push(lineItems[i]);
-                        cmp.set("v.NotCustomlist", customhardcoolers);
-                    }
-                }
 
-                console.log(lineItems);
-                cmp.set("v.insertList", lineItems);
+             lineItems.forEach(item1 => {
+                 if (item1.category__c == "Stock") {
+                     console.log(item1);
+                     stockList.push(item1);
+                 } else if (item1.category__c == "Custom") {
+                     console.log(item1);
+                     customlist.push(item1);
+                 } else if (item1.category__c == "NonCustom") {
+                     console.log(item1);
+                     customhardcoolers.push(item1);
+                 }
+             });
+             if (stockList.length > 0) {
+                 cmp.set("v.Coolerslist", stockList);
+             }
+             if (customlist.length > 0) {
+                 cmp.set("v.Customlist", customlist);
+             }
+             if (customhardcoolers.length > 0) {
+                 cmp.set("v.NotCustomlist", customhardcoolers);
+             }
+             if (lineItems.length > 0) {
+                 cmp.set("v.insertList", lineItems);
+             }
 
-                console.log(cmp.get("v.insertList"));
-                console.log(cmp.get("v.Coolerslist"));
-                cmp.set("v.loaded", false);
-            } else if (state === "INCOMPLETE") {
-                // do something
-            } else if (state === "ERROR") {
-                var errors = response.getError();
-                if (errors) {
-                    if (errors[0] && errors[0].message) {
-                        console.log("Error message: " +
-                            errors[0].message);
-                    }
-                } else {
-                    console.log("Unknown error");
-                }
-            }
-        });
 
-        $A.enqueueAction(getPricing);
 
-    },
 
+            // console.log(cmp.get("v.insertList"));
+             console.log(cmp.get("v.Coolerslist"));
+             cmp.set("v.loaded", false);
+             
+             }
+         } else if (state === "INCOMPLETE") {
+             // do something
+            cmp.set("v.loaded", false);
+            helper.showToast(cmp, "Error!", "Error", "transaction is in complete" );
+         } else if (state === "ERROR") {
+             var errors = response.getError();
+             if (errors) {
+                 if (errors[0] && errors[0].message) {
+                     console.log("Error message: " +
+                         errors[0].message);
+                 cmp.set("v.loaded", false);
+                 helper.showToast(cmp, "Error!", "Error", errors[0].message );
+                 }
+             } else {
+                 console.log("Unknown error");
+                 cmp.set("v.loaded", false);
+                 helper.showToast(cmp, "Error!", "Error", "Unknown error");
+             }
+         }
+     });
+
+     $A.enqueueAction(getPricing);
+
+ },
     onQuantityChange: function(component, event, helper) {
         console.log(event.target.name);
         console.log(event.target.id);

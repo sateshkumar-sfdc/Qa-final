@@ -20,5 +20,12 @@
         <label><!-- Field Value --></label>
         <name>FieldValue__c</name>
     </fields>
+    <layouts>
+        <layout>Seeddata_Key_Values Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
     <startsWith>Consonant</startsWith>
 </CustomObjectTranslation>

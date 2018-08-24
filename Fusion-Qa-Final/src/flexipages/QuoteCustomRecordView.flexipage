@@ -49,7 +49,7 @@
     </flexiPageRegions>
     <flexiPageRegions>
         <componentInstances>
-            <componentName>force:detailPanel</componentName>
+            <componentName>SapOrgDetailsViewTab</componentName>
         </componentInstances>
         <name>Facet-a66e909d-be22-449f-b56c-24c5262053b3</name>
         <type>Facet</type>

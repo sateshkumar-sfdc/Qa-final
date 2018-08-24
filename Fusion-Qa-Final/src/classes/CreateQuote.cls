@@ -1,3 +1,21 @@
+/*
+*************************************************************
+** Name: CreateQuote.apxc                        	       **
+** Copyright notice: 									   **
+** YETI Coolers										       **
+*************************************************************
+** Purpose:                  							   **
+** Create Quote from Lead to convert account , contact,    **
+** opportunity and Create Quote.                           **
+*************************************************************
+** History:                                                **
+************************************************************* 
+** VERSION AUTHOR DATE DETAIL RELEASE/CSR                  **
+** 1.0 - Satesh Makineni 08/21/2018 INITIAL DEVELOPMENT    **
+** 2.0 -                                                   **
+*************************************************************
+*/
+
 public class CreateQuote {
      @AuraEnabled
     public static List<Account> checkAccount(ID recId){
@@ -63,7 +81,7 @@ public class CreateQuote {
         idList.add(lcr.getOpportunityId());
          System.debug('opportunity'+idList[2]);
         
-        Quote_Header__c qh =  new Quote_Header__c(CurrencyIsoCode = l.CurrencyIsoCode, Account__c = idList[0], Contact__c = idList[1], Opportunity__c = idList[2], status__c = 'new');
+        Quote_Header__c qh =  new Quote_Header__c(CurrencyIsoCode = l.CurrencyIsoCode, Account__c = idList[0], Contact__c = idList[1], Opportunity__c = idList[2], status__c = 'new', Expires__c = System.Today()+30);
         insert qh;
         idList.add(qh.id);
 

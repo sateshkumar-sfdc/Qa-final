@@ -1,9 +1,156 @@
 ({
+   /* saveandcreate: function(component, event, helper, issave) {
+     component.set("v.loaded", true);
+     // var listnew = component.get("v.insertList");
+     //console.log(listnew)
+     var stock = component.get("v.Coolerslist");
+     var custom = component.get("v.Customlist");
+     var noncustom = component.get("v.NotCustomlist");
+
+     var listnew = [];
+     var listmap = new Map();
 
 
-    saveandcreate: function(component, event, helper, issave) {
+
+
+     for (let i in stock) {
+         listnew.push(stock[i]);
+         listmap.set(stock[i].itemnumber, stock[i]);
+     }
+     for (let i in custom) {
+         listnew.push(custom[i]);
+         listmap.set(custom[i].itemnumber, custom[i]);
+     }
+     for (let i in noncustom) {
+         listnew.push(noncustom[i]);
+         listmap.set(custom[i].itemnumber, custom[i]);
+     }
+
+
+
+     console.log("map");
+     console.log(listmap);
+
+
+     //component.set("v.testlist",d);
+     console.log("its my name");
+     console.log(component.get("v.testlist"));
+
+     console.log(JSON.stringify(component.get("v.insertList")));
+
+
+     var Quotedetails = {
+         "accountID": component.get("v.AccId"),
+         "opportunityId": component.get("v.OppId"),
+         "InHandsDate": component.find("inhanddateId").get("v.value"),
+         "DoNotShipBefore": component.find("DoNotShipBeforeId").get("v.value"),
+         "itemnumbertocature" : component.get("v.itemnumber")
+     }
+     console.log(JSON.stringify(Quotedetails));
+     var action3 = component.get("c.saveandupdateQuote");
+     action3.setParams({
+         newList: JSON.stringify(component.get("v.insertList")),
+         //updateList: JSON.stringify(component.get("v.updatedList")),
+         QuoteId: component.get("v.quoteID"),
+         QuoteDetails: JSON.stringify(Quotedetails)
+     });
+
+     action3.setCallback(this, function(response2) {
+
+         console.log(response2.getReturnValue());
+         var state = response2.getState();
+         console.log(state);
+         if (state === "SUCCESS") {
+             var results = response2.getReturnValue();
+             component.set("v.quoteID", results.quoteId);
+             console.log(JSON.parse(results.jsnString));
+             var objectIDs = JSON.parse(results.jsnString);
+
+             objectIDs.forEach(obj => {
+                 let values = listmap.get(obj.itemID);
+                 console.log(values);
+                 values.QuoteItemId = obj.QuoteItemId;
+
+                 obj.ArtIds.forEach(objid => {
+
+                     values.jsondata.forEach(jsonobj => {
+
+                         if (jsonobj.customtype == objid.Name) {
+
+                             jsonobj.artid = objid.Id;
+
+                         }
+
+                     });
+
+                 });
+
+
+             });
+
+
+             console.log(listnew);
+             component.set("v.insertList", listnew);
+
+             console.log(JSON.stringify(component.get("v.insertList")));
+             console.log(component.get("v.insertList"));
+             console.log(component.get("v.Coolerslist"));
+
+
+             component.set("v.loaded", false);
+             if (issave) {
+                 this.showToast(component, "Success!", "success", "Transaction Successfully Saved.");
+                 this.navigatetoobject(component, event, component.get("v.quoteID"));
+                 $A.get("e.force:refreshView").fire();
+
+             } else {
+                 this.showToast(component, "Success!", "success", "The record has been updated successfully.");
+             }
+
+         } else if (status === "INCOMPLETE") {
+             //console.log("No response from server or client is offline.");
+             this.showToast(component, "Error", "Error", "Incomplete Transaction Try again.");
+             // Show offline error
+         } else if (state === "ERROR") {
+             var errors = response.getError();
+             if (errors) {
+                 if (errors[0] && errors[0].message) {
+                     // console.log("Error message: " + errors[0].message);
+                     this.showToast(component, "Error", "Error", errors[0].message);
+                 }
+             } else {
+                 //console.log("Unknown error");
+                 this.showToast(component, "Error", "Error", "Unknown error Occurred Try After SomeTime.");
+             }
+
+         }
+     });
+     $A.enqueueAction(action3);
+ },*/
+
+   saveandcreate: function(component, event, helper,issave) {
        component.set("v.loaded", true);
         var listnew = component.get("v.insertList");
+       var Saporgdetails;
+       if ( component.get("v.SapOrgJson") != null && component.get("v.SapOrgJson") != "" ){
+           console.log("hai");
+            var OrgObj = JSON.parse(component.get("v.SapOrgJson"));
+            console.log(OrgObj);
+            console.log(JSON.stringify(OrgObj));
+        Saporgdetails = JSON.stringify(OrgObj);
+        
+        } else{
+            var OrgObj = {
+                "salesOrg":"",
+                "distribution":"",
+                "division":"",
+                "companycode":"",
+                "salesoffice":"",
+                "salesgrp":""
+            };
+           console.log(JSON.stringify(OrgObj));
+           Saporgdetails = JSON.stringify(OrgObj); 
+        }
         console.log(listnew);
         var Quotedetails = {
             "accountID": component.get("v.AccId"),
@@ -11,14 +158,18 @@
             "InHandsDate": component.find("inhanddateId").get("v.value"),
             "DoNotShipBefore": component.find("DoNotShipBeforeId").get("v.value"),
             "itemnumbertocature" : component.get("v.itemnumber")
+        
         }
+        
+        
         console.log(JSON.stringify(Quotedetails));
         var action3 = component.get("c.saveandupdateQuote");
         action3.setParams({
             newList: JSON.stringify(component.get("v.insertList")),
             //updateList: JSON.stringify(component.get("v.updatedList")),
             QuoteId: component.get("v.quoteID"),
-            QuoteDetails: JSON.stringify(Quotedetails)
+            QuoteDetails: JSON.stringify(Quotedetails),
+            sapdetails : Saporgdetails
         });
         action3.setCallback(this, function(response2) {
            	
@@ -63,7 +214,8 @@
                    this.navigatetoobject(component, event, component.get("v.quoteID"));
                     $A.get("e.force:refreshView").fire();
 
-                } else {
+                } 
+                else{
                     this.showToast(component, "Success!", "success", "The record has been updated successfully.");
                 }
 
@@ -229,7 +381,7 @@
                  //this.showErrorToast(cmp, event, message);
              } else {
                  var returnobj = JSON.parse(results);
-                 console.log(returnobj);
+                 
                  console.log(returnobj[0].errorMessage);
 
                  if (returnobj[0].errorMessage != null) {
@@ -278,6 +430,7 @@
                          lineobj.itemnumber = itmnum.toString();
                          lineobj.pricing = returnobj[0];
                          // lineobj.ProductLocation = lineobj.ProductLocation__c;
+                         lineobj.unitprice = returnobj[0].COND_VALUE;
                          lineobj.Quantity = 1;
                          lineobj.measure = 'units';
                          lineobj.Discountmeasure = '$';
@@ -397,13 +550,15 @@
         var itmnum1 = cmp.get("v.itemnumber") + num1;
 
         if ((prodId.category__c == "Stock") && (prodId.category__c != "" ) && (typeof(prodId.category__c) !== "undefined")) {
+            console.log(prodId.UPK__c);
             let lineobj1 = {
                 "itemnumber": itmnum1.toString(),
                 "Description": prodId.Description__c,
                 "Name": prodId.ProductName__c,
                 "ProductLocation__c": prodId.ProductURL__c,
                 "category__c" : prodId.category__c,
-                "MaterialID__c" : prodId.MaterialID__c
+                "MaterialID__c" : prodId.MaterialID__c,
+                "UPK__c" : prodId.UPK__c
             }
             lineobj1.pricing = returnobj[0];
             lineobj1.unitprice = returnobj[0].COND_VALUE;
@@ -419,6 +574,7 @@
             insertlst.push(lineobj1);
             cmp.set("v.insertList", insertlst);
             cmp.set("v.itemnumber", itmnum1);
+            console.log(cmp.get("v.insertList"));
         } else {
             let lineobj1 = {
                 "itemnumber": itmnum1.toString(),

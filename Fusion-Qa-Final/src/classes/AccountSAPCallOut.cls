@@ -1,6 +1,23 @@
+/*
+*************************************************************
+** Name: AccountSAPCallOut.apxc                        	   **
+** Copyright notice: 									   **
+** YETI Coolers										       **
+*************************************************************
+** Purpose:                  							   **
+** This class Contains Ship to and Sold To Methods to Call **
+**	SAP     											   **
+*************************************************************
+** History:                                                **
+************************************************************* 
+** VERSION AUTHOR DATE DETAIL RELEASE/CSR                  **
+** 1.0 - Satesh Makineni 08/17/2018 INITIAL DEVELOPMENT    **
+** 2.0 -                                                   **
+*************************************************************
+*/
 public class AccountSAPCallOut {
    
-	
+	// Ship To callOut Mapping
     public static ShipToResponse shipToCallOut(Account shipAcc)
     {
         ShipToRequest shipReq = new ShipToRequest();
@@ -83,7 +100,7 @@ public class AccountSAPCallOut {
         req = req.replaceAll('_Z', '');
         system.debug(req);
         
-        string response = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_BPCreate', req, 'POST');    //'{"BUSINESSPARTNER":"0000200371","RETURN":{"item":[{"TYPE":"S","ID":"FSBP_BAPI","NUMBER":"051","MESSAGE":"Instance 0000200371 belonging to object type BusinessPartnerFS was created","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"BusinessPartnerFS","MESSAGE_V2":"0000200371","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":0,"FIELD":"","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"00","NUMBER":"058","MESSAGE":"Entry 1100 1200 does not exist in TVKWZ (check entry)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":1200,"MESSAGE_V4":"TVKWZ","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"001","MESSAGE":"Plant: Invalid value (foreign key check failed)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Plant","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":644,"MESSAGE":"Sales area 1100 10 is not defined for customers","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":10,"MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Organization, Distribution Channel, Division: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Organization, Distribution Channel, Division","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":712,"MESSAGE":"Office STD is not defined for sales area 1100 10","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"STD","MESSAGE_V2":1100,"MESSAGE_V3":"","MESSAGE_V4":10,"PARAMETER":"","ROW":1,"FIELD":"VKBUR","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Group, Sales Office: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Group, Sales Office","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKGRP","SYSTEM":"DR1CLNT120"}]}}';
+        string response = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_BPMaintain', req, 'POST');    //'{"BUSINESSPARTNER":"0000200371","RETURN":{"item":[{"TYPE":"S","ID":"FSBP_BAPI","NUMBER":"051","MESSAGE":"Instance 0000200371 belonging to object type BusinessPartnerFS was created","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"BusinessPartnerFS","MESSAGE_V2":"0000200371","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":0,"FIELD":"","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"00","NUMBER":"058","MESSAGE":"Entry 1100 1200 does not exist in TVKWZ (check entry)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":1200,"MESSAGE_V4":"TVKWZ","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"001","MESSAGE":"Plant: Invalid value (foreign key check failed)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Plant","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":644,"MESSAGE":"Sales area 1100 10 is not defined for customers","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":10,"MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Organization, Distribution Channel, Division: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Organization, Distribution Channel, Division","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":712,"MESSAGE":"Office STD is not defined for sales area 1100 10","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"STD","MESSAGE_V2":1100,"MESSAGE_V3":"","MESSAGE_V4":10,"PARAMETER":"","ROW":1,"FIELD":"VKBUR","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Group, Sales Office: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Group, Sales Office","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKGRP","SYSTEM":"DR1CLNT120"}]}}';
         response = response.replaceAll('TYPE', 'TYPE_Z');
         response = response.replaceAll('NUMBER', 'NUMBER_Z');
         response = response.replaceAll('RETURN', 'RETURN_Z');
@@ -93,7 +110,7 @@ public class AccountSAPCallOut {
         
     }
     
-    
+    //Sold To callOut Mapping
     public static soldToResponse soldToCallOut(Account soldAcc)
     {
         SoldToRequest soldReq = new SoldToRequest();
@@ -176,7 +193,7 @@ public class AccountSAPCallOut {
         req = req.replaceAll('_Z', '');
         system.debug(req);
         
-        string response = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_BPCreate', req, 'POST');   //'{"BUSINESSPARTNER":"0000200371","RETURN":{"item":[{"TYPE":"S","ID":"FSBP_BAPI","NUMBER":"051","MESSAGE":"Instance 0000200371 belonging to object type BusinessPartnerFS was created","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"BusinessPartnerFS","MESSAGE_V2":"0000200371","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":0,"FIELD":"","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"00","NUMBER":"058","MESSAGE":"Entry 1100 1200 does not exist in TVKWZ (check entry)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":1200,"MESSAGE_V4":"TVKWZ","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"001","MESSAGE":"Plant: Invalid value (foreign key check failed)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Plant","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":644,"MESSAGE":"Sales area 1100 10 is not defined for customers","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":10,"MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Organization, Distribution Channel, Division: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Organization, Distribution Channel, Division","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":712,"MESSAGE":"Office STD is not defined for sales area 1100 10","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"STD","MESSAGE_V2":1100,"MESSAGE_V3":"","MESSAGE_V4":10,"PARAMETER":"","ROW":1,"FIELD":"VKBUR","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Group, Sales Office: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Group, Sales Office","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKGRP","SYSTEM":"DR1CLNT120"}]}}';
+        string response = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_BPMaintain', req, 'POST');   //'{"BUSINESSPARTNER":"0000200371","RETURN":{"item":[{"TYPE":"S","ID":"FSBP_BAPI","NUMBER":"051","MESSAGE":"Instance 0000200371 belonging to object type BusinessPartnerFS was created","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"BusinessPartnerFS","MESSAGE_V2":"0000200371","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":0,"FIELD":"","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"00","NUMBER":"058","MESSAGE":"Entry 1100 1200 does not exist in TVKWZ (check entry)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":1200,"MESSAGE_V4":"TVKWZ","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"001","MESSAGE":"Plant: Invalid value (foreign key check failed)","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Plant","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"WERKS","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":644,"MESSAGE":"Sales area 1100 10 is not defined for customers","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":1100,"MESSAGE_V2":"","MESSAGE_V3":10,"MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Organization, Distribution Channel, Division: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Organization, Distribution Channel, Division","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKORG","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"F2","NUMBER":712,"MESSAGE":"Office STD is not defined for sales area 1100 10","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"STD","MESSAGE_V2":1100,"MESSAGE_V3":"","MESSAGE_V4":10,"PARAMETER":"","ROW":1,"FIELD":"VKBUR","SYSTEM":"DR1CLNT120"},{"TYPE":"E","ID":"CVI_API","NUMBER":"007","MESSAGE":"Sales Group, Sales Office: Plausibility check failed","LOG_NO":"","LOG_MSG_NO":"000000","MESSAGE_V1":"Sales Group, Sales Office","MESSAGE_V2":"","MESSAGE_V3":"","MESSAGE_V4":"","PARAMETER":"","ROW":1,"FIELD":"VKGRP","SYSTEM":"DR1CLNT120"}]}}';
         response = response.replaceAll('TYPE', 'TYPE_Z');
         response = response.replaceAll('NUMBER', 'NUMBER_Z');
         response = response.replaceAll('RETURN', 'RETURN_Z');
@@ -185,11 +202,13 @@ public class AccountSAPCallOut {
         
         
     }
-    
+   
+    // Linking Ship To to Sold To in SAP
     public static void soldShipCallout( string  BUSINESSPARTNER, string PARTNER)
    {
        SoldToShipTo soldShipReq =  new SoldToShipTo();
-       soldShipReq.BUSINESSPARTNER = '0000102166';
+       soldShipReq.BUSINESSPARTNER = PARTNER;//'0000102166';
+       System.debug('Partner -------------->'+soldShipReq.BUSINESSPARTNER);
        
        SoldToShipTo.SALES_KEY skData = new SoldToShipTo.SALES_KEY();
        skData.SALESORG = '1100';
@@ -201,7 +220,8 @@ public class AccountSAPCallOut {
        SoldToShipTo.Item item = new SoldToShipTo.Item();
        
        SoldToShipTo.DATA data = new SoldToShipTo.DATA();
-       data.PARTNER = '0000200371';
+       data.PARTNER = BUSINESSPARTNER;//'0000200371';
+        System.debug('BusinessPartner -------------->'+data.PARTNER);
        item.DATA = data;
        
        SoldToShipTo.DATA_KEY dk = new SoldToShipTo.DATA_KEY();
@@ -213,8 +233,10 @@ public class AccountSAPCallOut {
        pf.item = item;
        
        string req = JSON.serialize(soldShipReq, true);
-       string response = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_BPCreate', req, 'POST');
-       //system.debug((shipToResponse) System.JSON.deserialize(response, shipToResponse.class));
-   }
+       system.debug(req);
+       string response = CommonServiceApiUtil.sendApiRequest('callout:SAP_PI_BPMaintain', req, 'POST');
+       system.debug('---->'+(SoldToShipToResponse) System.JSON.deserialize(response, SoldToShipToResponse.class));
+     
+       }
 
 }

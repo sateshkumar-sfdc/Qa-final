@@ -131,7 +131,7 @@ public class GetPrices_Quote {
                 item=new Map<String,String>();
                 item.put('ITM_NUMBER',g.itemnumber);
                 item.put('MATERIAL',g.MaterialID);
-                item.put('PLANT','1200');
+                
                 item.put('TARGET_QTY',String.valueOf(g.Quantity));
                 items.add(item);
              }
